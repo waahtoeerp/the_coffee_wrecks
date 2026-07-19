@@ -22,3 +22,25 @@ data/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Folders
+bwa-out/*
+!bwa-out/.gitkeep
+
+gatk-out/*
+!gatk-out/.gitkeep
+
+mapDamage-out/*
+!mapDamage-out/.gitkeep
+
+ref_gen/*
+!ref_gen/.gitkeep
+
+slurm-out/*
+!slurm-out/.gitkeep
+
+vcf-stats-out/*
+!vcf-stats-out/.gitkeep
+
+vrouw_maria_2026/*
+!vrouw_maria_2026/.gitkeep
