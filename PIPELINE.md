@@ -1,3 +1,5 @@
+
+```mermaid
 flowchart TD
     A["⚠️ bwa align + sort\n(script not in repo)"] --> B["bwa-out/SAMPLE_sorted.bam"]
     B --> C["mapDamage_vrouw_maria.sh\n⚠️ MarkDuplicates block commented out"]
@@ -17,6 +19,6 @@ flowchart TD
     P --> Q["vcf_plot.sh"]
     Q --> R["Final rendered plots"]
 
-    style C fill:#ffdddd
-    style O fill:#fff3cd
+
+```
 
