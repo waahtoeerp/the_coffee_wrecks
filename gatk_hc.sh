@@ -17,10 +17,6 @@ INBAM=$BASE/bwa-out/${SAMPLE}_rescaled_RG.bam
 
 mkdir -p $BASE/gatk-out
 
-# Index reference for GATK (only needed once)
-samtools faidx $REF
-gatk CreateSequenceDictionary -R $REF
-
 # Variant calling
 gatk HaplotypeCaller \
     -R $REF \

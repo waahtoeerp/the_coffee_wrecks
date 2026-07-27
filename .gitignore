@@ -42,5 +42,8 @@ slurm-out/*
 vcf-stats-out/*
 !vcf-stats-out/.gitkeep
 
+fastqc-out/*
+!fastqc-out/.gitkeep
+
 vrouw_maria_2026/*
 !vrouw_maria_2026/.gitkeep

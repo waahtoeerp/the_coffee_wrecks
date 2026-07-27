@@ -17,15 +17,15 @@ SAMPLE=CT600-007R0002
 INBAM=$BASE/bwa-out/${SAMPLE}_sorted.bam
 DEDUP=$BASE/bwa-out/${SAMPLE}_dedup.bam
 
-#mkdir -p $BASE/mapDamage-out
+mkdir -p $BASE/mapDamage-out
 
-#picard MarkDuplicates \
-#    I=$INBAM \
-#    O=$DEDUP \
-#    M=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt \
-#    REMOVE_DUPLICATES=true
+picard MarkDuplicates \
+    I=$INBAM \
+    O=$DEDUP \
+    M=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt \
+    REMOVE_DUPLICATES=true
 
-#samtools index $DEDUP
+samtools index $DEDUP
 
 mapDamage \
     -i $INBAM \

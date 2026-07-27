@@ -15,6 +15,8 @@ SAMPLE=CT600-007R0002
 INBAM=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 OUTBAM=$BASE/bwa-out/${SAMPLE}_rescaled_RG.bam
 
+mkdir -p $BASE/bwa-out
+
 picard AddOrReplaceReadGroups \
     I=$INBAM \
     O=$OUTBAM \

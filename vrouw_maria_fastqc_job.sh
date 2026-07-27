@@ -8,4 +8,10 @@
 #SBATCH --mem=4G
 
 module load fastqc
-fastqc -t 4 /scratch/project_2019675/vrouw_maria_2026/*.fq.gz
+
+BASE=/scratch/project_2019675
+OUTDIR=$BASE/fastqc-out
+
+mkdir -p $OUTDIR
+
+fastqc -t 4 -o $OUTDIR $BASE/vrouw_maria_2026/*.fq.gz
