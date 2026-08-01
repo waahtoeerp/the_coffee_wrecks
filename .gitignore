@@ -47,3 +47,6 @@ fastqc-out/*
 
 vrouw_maria_2026/*
 !vrouw_maria_2026/.gitkeep
+
+viz-data/*
+!viz-data/.gitkeep

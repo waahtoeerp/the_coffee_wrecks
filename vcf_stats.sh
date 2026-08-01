@@ -9,7 +9,7 @@
 
 module load biokit
 
-BASE=/scratch/project_2019675
+BASE=/scratch/project_2019675/the_coffee_wrecks
 SAMPLE=CT600-007R0002
 
 mkdir -p $BASE/vcf-stats-out/${SAMPLE}_plots

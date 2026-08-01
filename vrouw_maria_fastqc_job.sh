@@ -9,7 +9,7 @@
 
 module load fastqc
 
-BASE=/scratch/project_2019675
+BASE=/scratch/project_2019675/the_coffee_wrecks
 OUTDIR=$BASE/fastqc-out
 
 mkdir -p $OUTDIR
