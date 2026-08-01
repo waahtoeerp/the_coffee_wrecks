@@ -21,10 +21,7 @@ flowchart TD
     P --> Q["vcf_plot.sh"]
     Q --> R["Final rendered plots"]
 
-    style A fill:#ffdddd
-    style C fill:#ffdddd
-    style O fill:#fff3cd
-    style Z fill:#fff3cd
+
 
 ```
 
