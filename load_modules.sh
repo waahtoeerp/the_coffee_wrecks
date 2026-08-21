@@ -14,11 +14,6 @@
 echo "=== module list (default environment at job start) ==="
 module list
 
-echo "=== module spider biokit ==="
-# Other scripts (vcf_stats.sh, extract_snp_viz_data.sh) load this instead of
-# individual tools — checking whether it's the toolchain that unlocks the rest.
-module spider biokit
-
 echo "=== module spider gatk ==="
 module spider gatk
 

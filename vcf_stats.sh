@@ -6,6 +6,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=eero.saarinen@helsinki.fi
 
 module load biokit
 

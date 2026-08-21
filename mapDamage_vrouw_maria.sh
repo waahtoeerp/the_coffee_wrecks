@@ -6,6 +6,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=eero.saarinen@helsinki.fi
 
 module load samtools
 module load picard
