@@ -21,9 +21,7 @@ OUTDIR=$BASE/bwa-out
 
 mkdir -p $OUTDIR
 
-# Index (skip if already done)
-bwa index $REF
-
+# Reference must already be indexed by setup_reference.sh (.bwt/.pac/.ann/.amb/.sa)
 # Align
 bwa aln -l 16500 -n 0.01 -t 4 $REF $R1 > $OUTDIR/${SAMPLE}_1.sai
 bwa aln -l 16500 -n 0.01 -t 4 $REF $R2 > $OUTDIR/${SAMPLE}_2.sai

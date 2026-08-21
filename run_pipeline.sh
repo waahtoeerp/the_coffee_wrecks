@@ -16,7 +16,7 @@ jid_setup=$(sbatch --parsable setup_reference.sh)
 jid_fastqc=$(sbatch --parsable vrouw_maria_fastqc_job.sh)
 
 echo "Submitting alignment..."
-jid_bwa=$(sbatch --parsable bwa-vrouw.sh)
+jid_bwa=$(sbatch --parsable --dependency=afterok:$jid_setup bwa-vrouw.sh)
 
 echo "Submitting dedup + mapDamage QC..."
 jid_dedup=$(sbatch --parsable --dependency=afterok:$jid_bwa mapDamage_vrouw_maria.sh)
