@@ -14,4 +14,4 @@ OUTDIR=$BASE/fastqc-out
 
 mkdir -p $OUTDIR
 
-fastqc -t 4 -o $OUTDIR $BASE/vrouw_maria_2026/*.fq.gz
+fastqc -t 4 -o $OUTDIR $BASE/vrouw_maria_2026_segments/*.fq.gz
