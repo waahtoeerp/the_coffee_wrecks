@@ -9,6 +9,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+module load bio-apps/v202603
 module load samtools
 module load mapdamage2/2.2.2
 

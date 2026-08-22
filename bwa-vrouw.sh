@@ -11,6 +11,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+module load bio-apps/v202603
 module load bwa
 module load samtools
 
