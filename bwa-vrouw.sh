@@ -11,11 +11,11 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load bio-apps/v202603
-module load bwa
-module load samtools
-
 BASE=/scratch/project_2019675/the_coffee_wrecks
+source $BASE/load_modules.sh
+module load bwa/0.7.19
+module load samtools/1.21
+
 REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
 R1=$BASE/vrouw_maria_2026/Unknown_CT600-007R0002_1.fq.gz
 R2=$BASE/vrouw_maria_2026/Unknown_CT600-007R0002_2.fq.gz

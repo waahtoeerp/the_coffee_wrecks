@@ -39,14 +39,14 @@ ref_gen/*
 slurm-out/*
 !slurm-out/.gitkeep
 
-vcf-stats-out/*
-!vcf-stats-out/.gitkeep
-
 fastqc-out/*
 !fastqc-out/.gitkeep
 
 vrouw_maria_2026/*
 !vrouw_maria_2026/.gitkeep
 
-viz-data/*
-!viz-data/.gitkeep
+visualization/vcf-stats-out/*
+!visualization/vcf-stats-out/.gitkeep
+
+visualization/viz-data/*
+!visualization/viz-data/.gitkeep

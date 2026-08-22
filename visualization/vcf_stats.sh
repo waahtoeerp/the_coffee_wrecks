@@ -9,17 +9,19 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load biokit
-
 BASE=/scratch/project_2019675/the_coffee_wrecks
-SAMPLE=CT600-007R0002
+source $BASE/load_modules.sh
+module load bcftools/1.23.1
 
-mkdir -p $BASE/vcf-stats-out/${SAMPLE}_plots
+SAMPLE=CT600-007R0002
+OUTDIR=$BASE/visualization/vcf-stats-out
+
+mkdir -p $OUTDIR/${SAMPLE}_plots
 
 bcftools stats \
     $BASE/gatk-out/${SAMPLE}_filtered.vcf.gz \
-    > $BASE/vcf-stats-out/${SAMPLE}_stats.txt
+    > $OUTDIR/${SAMPLE}_stats.txt
 
 plot-vcfstats \
-    -p $BASE/vcf-stats-out/${SAMPLE}_plots/ \
-    $BASE/vcf-stats-out/${SAMPLE}_stats.txt
+    -p $OUTDIR/${SAMPLE}_plots/ \
+    $OUTDIR/${SAMPLE}_stats.txt

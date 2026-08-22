@@ -9,13 +9,15 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load biokit
-
 BASE=/scratch/project_2019675/the_coffee_wrecks
+source $BASE/load_modules.sh
+module load bcftools/1.23.1
+module load samtools/1.21
+
 SAMPLE=CT600-007R0002
 VCF=$BASE/gatk-out/${SAMPLE}_filtered.vcf.gz
 BAM=$BASE/bwa-out/${SAMPLE}_rescaled_RG.bam
-OUTDIR=$BASE/viz-data
+OUTDIR=$BASE/visualization/viz-data
 WINDOW=2000
 BINSIZE=25
 

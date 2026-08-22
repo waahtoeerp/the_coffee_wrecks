@@ -9,10 +9,10 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load bio-apps/v202603
-module load fastqc
-
 BASE=/scratch/project_2019675/the_coffee_wrecks
+source $BASE/load_modules.sh
+module load fastqc/0.12.1
+
 OUTDIR=$BASE/fastqc-out
 
 mkdir -p $OUTDIR

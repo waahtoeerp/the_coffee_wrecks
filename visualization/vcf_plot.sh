@@ -9,7 +9,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load python-data
+module load python-data/3.12-31.03
 
-cd /scratch/project_2019675/vcf-stats-out/CT600-007R0002_plots/
+BASE=/scratch/project_2019675/the_coffee_wrecks
+cd $BASE/visualization/vcf-stats-out/CT600-007R0002_plots/
 python plot.py

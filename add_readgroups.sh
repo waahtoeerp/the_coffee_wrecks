@@ -9,11 +9,11 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
-module load bio-apps/v202603
-module load picard
-module load samtools
-
 BASE=/scratch/project_2019675/the_coffee_wrecks
+source $BASE/load_modules.sh
+module load picard/3.3.0
+module load samtools/1.21
+
 SAMPLE=CT600-007R0002
 INBAM=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 OUTBAM=$BASE/bwa-out/${SAMPLE}_rescaled_RG.bam

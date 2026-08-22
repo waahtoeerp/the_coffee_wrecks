@@ -36,11 +36,10 @@ jid_geno=$(sbatch --parsable --dependency=afterok:$jid_hc genotype_gvcf.sh)
 echo "Submitting variant filtering..."
 jid_filter=$(sbatch --parsable --dependency=afterok:$jid_geno gatk-filter.sh)
 
-echo "Submitting VCF stats..."
-jid_stats=$(sbatch --parsable --dependency=afterok:$jid_filter vcf_stats.sh)
-
-echo "Submitting VCF plotting..."
-jid_plot=$(sbatch --parsable --dependency=afterok:$jid_stats vcf_plot.sh)
+# Visualization (vcf_stats.sh, vcf_plot.sh, extract_snp_viz_data.sh,
+# build_snp_viz.py) lives in visualization/ and is not submitted here yet —
+# base analysis needs a verified run first. Submit those manually once
+# gatk-filter.sh output has been checked.
 
 cat <<EOF
 
@@ -54,8 +53,8 @@ Submitted job chain:
   gatk_hc                          -> $jid_hc
   genotype_gvcf                    -> $jid_geno
   gatk-filter                      -> $jid_filter
-  vcf_stats                        -> $jid_stats
-  vcf_plot                         -> $jid_plot
+
+Visualization not submitted yet — see visualization/ once the run above is verified.
 
 Check status with: squeue -u \$USER
 EOF
