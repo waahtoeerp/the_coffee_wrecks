@@ -14,7 +14,7 @@ data/*
 
 # Logs
 *.log
-
+slurm-*.out
 # Editor
 .vscode/
 .idea/
