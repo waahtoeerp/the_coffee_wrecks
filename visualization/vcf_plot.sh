@@ -9,6 +9,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 module load python-data/3.12-31.03
 
 BASE=/scratch/project_2019675/the_coffee_wrecks
