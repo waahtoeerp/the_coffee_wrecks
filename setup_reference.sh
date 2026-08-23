@@ -9,6 +9,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 BASE=/scratch/project_2019675/the_coffee_wrecks
 source $BASE/load_modules.sh
 module load gatk/4.5.0.0
@@ -16,9 +18,12 @@ module load samtools/1.21
 module load bwa/0.7.19
 
 REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
+DICT=${REF%.fna}.dict
 
 # One-time reference indexing, needed by bwa-vrouw.sh and gatk_hc.sh.
-# Run once per reference; safe to skip on reruns if .fai/.dict/.bwt etc already exist.
-samtools faidx $REF
-gatk CreateSequenceDictionary -R $REF
-bwa index $REF
+# run_pipeline.sh resubmits this job for every sample, so each step is
+# skipped if its output already exists (idempotent under set -e — GATK's
+# CreateSequenceDictionary errors out rather than overwriting).
+[ -f "${REF}.fai" ] || samtools faidx $REF
+[ -f "$DICT" ] || gatk CreateSequenceDictionary -R $REF
+[ -f "${REF}.bwt" ] || bwa index $REF

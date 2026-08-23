@@ -9,6 +9,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 BASE=/scratch/project_2019675/the_coffee_wrecks
 source $BASE/load_modules.sh
 module load samtools/1.21
@@ -16,8 +18,8 @@ module load picard/3.3.0
 module load mapdamage2/2.2.3
 
 REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
-SAMPLE=CT600-007R0002
-INBAM=$BASE/bwa-out/${SAMPLE}_sorted.bam
+SAMPLE=$1
+INBAM=$BASE/bwa-out/${SAMPLE}_sorted_RG.bam
 DEDUP=$BASE/bwa-out/${SAMPLE}_dedup.bam
 
 mkdir -p $BASE/mapDamage-out

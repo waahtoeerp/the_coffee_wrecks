@@ -11,15 +11,17 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 BASE=/scratch/project_2019675/the_coffee_wrecks
 source $BASE/load_modules.sh
 module load bwa/0.7.19
 module load samtools/1.21
 
 REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
-R1=$BASE/vrouw_maria_2026/Unknown_CT600-007R0002_1.fq.gz
-R2=$BASE/vrouw_maria_2026/Unknown_CT600-007R0002_2.fq.gz
-SAMPLE=CT600-007R0002
+SAMPLE=$1
+R1=$BASE/vrouw_maria_2026_segments/Unknown_${SAMPLE}_1.fq.gz
+R2=$BASE/vrouw_maria_2026_segments/Unknown_${SAMPLE}_2.fq.gz
 OUTDIR=$BASE/bwa-out
 
 mkdir -p $OUTDIR

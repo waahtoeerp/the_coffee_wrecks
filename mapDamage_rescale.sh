@@ -9,13 +9,15 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 BASE=/scratch/project_2019675/the_coffee_wrecks
 source $BASE/load_modules.sh
 module load samtools/1.21
 module load mapdamage2/2.2.3
 
 REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
-SAMPLE=CT600-007R0002
+SAMPLE=$1
 DEDUP=$BASE/bwa-out/${SAMPLE}_dedup.bam
 
 mkdir -p $BASE/mapDamage-out
@@ -27,4 +29,9 @@ mapDamage \
     -r $REF \
     --rescale \
     --folder $BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup
+
+# Indexed here since this rescaled BAM (already RG-tagged, carried through
+# from add_readgroups.sh via MarkDuplicates) now feeds gatk_hc.sh directly.
+RESCALED=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
+samtools index $RESCALED
 

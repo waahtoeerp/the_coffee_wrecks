@@ -9,6 +9,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=eero.saarinen@helsinki.fi
 
+set -euo pipefail
+
 BASE=/scratch/project_2019675/the_coffee_wrecks
 source $BASE/load_modules.sh
 module load fastqc/0.12.1
