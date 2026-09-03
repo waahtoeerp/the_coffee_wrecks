@@ -1,13 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=snp-viz-extract
-#SBATCH --account=project_2019675
-#SBATCH --partition=small
-#SBATCH --time=00:30:00
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=8G
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=eero.saarinen@helsinki.fi
+# Run directly on the Roihu login node — not an sbatch job. The BAM/VCF it
+# reads only exist on Roihu; this produces small .tsv/.txt extracts in
+# visualization/viz-data/ that get copied to a local machine for plotting
+# (vcf_plot.sh / build_snp_viz.py — those run entirely locally, not here).
+#
+# Usage: ./extract_snp_viz_data.sh <SAMPLE>
+#   e.g. ./extract_snp_viz_data.sh CT600-007R0002
 
 set -euo pipefail
 
@@ -16,7 +14,7 @@ source $BASE/load_modules.sh
 module load bcftools/1.23.1
 module load samtools/1.21
 
-SAMPLE=CT600-007R0002
+SAMPLE=$1
 VCF=$BASE/gatk-out/${SAMPLE}_filtered.vcf.gz
 BAM=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 OUTDIR=$BASE/visualization/viz-data
