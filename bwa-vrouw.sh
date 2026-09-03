@@ -4,7 +4,7 @@
 #SBATCH --partition=small
 #SBATCH --output=output_%j.txt
 #SBATCH --error=errors_%j.txt
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
@@ -27,9 +27,13 @@ OUTDIR=$BASE/bwa-out
 mkdir -p $OUTDIR
 
 # Reference must already be indexed by setup_reference.sh (.bwt/.pac/.ann/.amb/.sa)
-# Align
-bwa aln -l 16500 -n 0.01 -t 4 $REF $R1 > $OUTDIR/${SAMPLE}_1.sai
-bwa aln -l 16500 -n 0.01 -t 4 $REF $R2 > $OUTDIR/${SAMPLE}_2.sai
+# Align. bwa aln is the slow part (hours) and was what timed out under
+# concurrent-sample cluster contention on 2026-08-23 — skip it on resubmission
+# if the .sai already exists. This is a plain existence check, not a
+# completeness check: if a run was killed *during* bwa aln itself (rather
+# than after, like the 2026-08-23 case), delete the partial .sai and rerun.
+[ -f "$OUTDIR/${SAMPLE}_1.sai" ] || bwa aln -l 16500 -n 0.01 -t 4 $REF $R1 > $OUTDIR/${SAMPLE}_1.sai
+[ -f "$OUTDIR/${SAMPLE}_2.sai" ] || bwa aln -l 16500 -n 0.01 -t 4 $REF $R2 > $OUTDIR/${SAMPLE}_2.sai
 
 # Pair and convert
 bwa sampe $REF $OUTDIR/${SAMPLE}_1.sai $OUTDIR/${SAMPLE}_2.sai $R1 $R2 | \
