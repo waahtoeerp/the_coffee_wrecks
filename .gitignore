@@ -14,6 +14,8 @@ data/*
 
 # Logs
 *.log
+slurm-*.out
+errors*.txt
 
 # Editor
 .vscode/
@@ -22,3 +24,33 @@ data/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Folders
+bwa-out/*
+!bwa-out/.gitkeep
+
+gatk-out/*
+!gatk-out/.gitkeep
+
+mapDamage-out/*
+!mapDamage-out/.gitkeep
+
+ref_gen/*
+!ref_gen/.gitkeep
+
+slurm-out/*
+!slurm-out/.gitkeep
+
+fastqc-out/*
+!fastqc-out/.gitkeep
+
+vrouw_maria_2026/*
+!vrouw_maria_2026/.gitkeep
+
+visualization/vcf-stats-out/*
+!visualization/vcf-stats-out/.gitkeep
+
+visualization/viz-data/*
+!visualization/viz-data/.gitkeep
+
+output-id/*
