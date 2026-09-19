@@ -36,3 +36,9 @@ mapDamage \
     -i $INBAM \
     -r $REF \
     --folder $BASE/mapDamage-out/${SAMPLE}_mapDamage
+
+# Cleanup: $INBAM (bwa-out/${SAMPLE}_sorted_RG.bam) is used by both steps
+# above (MarkDuplicates and this QC-only mapDamage run) but nothing after
+# this script reads it once $DEDUP exists. See bwa-vrouw.sh for why this
+# matters (disk-quota crises from parallel sample chains).
+rm -f $INBAM $INBAM.bai

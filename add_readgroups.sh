@@ -35,3 +35,9 @@ picard AddOrReplaceReadGroups \
     RGSM=$SAMPLE
 
 samtools index $OUTBAM
+
+# Cleanup: $INBAM (bwa-out/${SAMPLE}_sorted.bam) is only ever read here —
+# nothing downstream needs it once $OUTBAM exists. See bwa-vrouw.sh for
+# why this matters (disk-quota crises from 4 parallel sample chains each
+# keeping every stage's BAM alive simultaneously).
+rm -f $INBAM $INBAM.bai

@@ -35,3 +35,8 @@ mapDamage \
 RESCALED=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 samtools index $RESCALED
 
+# Cleanup: $DEDUP is only ever read here — gatk_hc.sh and everything after
+# it reads $RESCALED instead. See bwa-vrouw.sh for why this matters
+# (disk-quota crises from parallel sample chains).
+rm -f $DEDUP $DEDUP.bai
+
