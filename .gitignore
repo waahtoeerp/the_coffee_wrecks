@@ -47,11 +47,13 @@ fastqc-out/*
 vrouw_maria_2026/*
 !vrouw_maria_2026/.gitkeep
 
-visualization/vcf-stats-out/*
-!visualization/vcf-stats-out/.gitkeep
-
-visualization/viz-data/*
-!visualization/viz-data/.gitkeep
+# visualization/vcf-stats-out/ and visualization/viz-data/ are deliberately
+# tracked (not ignored), unlike every other output dir above — they're
+# small (a few MB total for all 4 samples) and are the actual dashboard
+# input data (CW_viz_pipeline, local machine), so committing them lets
+# git history double as a before/after record across pipeline changes
+# (e.g. the 2026-09-19 fastp adapter-trimming addition) instead of losing
+# that comparison the moment new output overwrites old.
 
 output-id/*
 
