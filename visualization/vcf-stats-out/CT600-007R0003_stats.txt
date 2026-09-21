@@ -21,48 +21,48 @@ ID	0	/scratch/project_2019675/the_coffee_wrecks/gatk-out/CT600-007R0003_filtered
 # 
 # SN	[2]id	[3]key	[4]value
 SN	0	number of samples:	1
-SN	0	number of records:	207
+SN	0	number of records:	209
 SN	0	number of no-ALTs:	0
-SN	0	number of SNPs:	201
+SN	0	number of SNPs:	203
 SN	0	number of MNPs:	0
 SN	0	number of indels:	6
 SN	0	number of others:	0
-SN	0	number of multiallelic sites:	1
-SN	0	number of multiallelic SNP sites:	1
+SN	0	number of multiallelic sites:	0
+SN	0	number of multiallelic SNP sites:	0
 # TSTV, transitions/transversions
 #   - transitions, see https://en.wikipedia.org/wiki/Transition_(genetics)
 #   - transversions, see https://en.wikipedia.org/wiki/Transversion
 # TSTV	[2]id	[3]ts	[4]tv	[5]ts/tv	[6]ts (1st ALT)	[7]tv (1st ALT)	[8]ts/tv (1st ALT)
-TSTV	0	131	71	1.85	131	70	1.87
+TSTV	0	132	71	1.86	132	71	1.86
 # SiS, Singleton stats:
 #   - allele count, i.e. the number of singleton genotypes (AC=1)
 #   - number of transitions, see above
 #   - number of transversions, see above
 #   - repeat-consistent, inconsistent and n/a: experimental and useless stats [DEPRECATED]
 # SiS	[2]id	[3]allele count	[4]number of SNPs	[5]number of transitions	[6]number of transversions	[7]number of indels	[8]repeat-consistent	[9]repeat-inconsistent	[10]not applicable
-SiS	0	1	13	9	4	0	0	0	0
+SiS	0	1	6	4	2	0	0	0	0
 # AF, Stats by non-reference allele frequency:
 # AF	[2]id	[3]allele frequency	[4]number of SNPs	[5]number of transitions	[6]number of transversions	[7]number of indels	[8]repeat-consistent	[9]repeat-inconsistent	[10]not applicable
-AF	0	0.000000	13	9	4	0	0	0	0
-AF	0	0.990000	189	122	67	6	0	0	6
+AF	0	0.000000	6	4	2	0	0	0	0
+AF	0	0.990000	197	128	69	6	0	0	6
 # QUAL, Stats by quality
 # QUAL	[2]id	[3]Quality	[4]number of SNPs	[5]number of transitions (1st ALT)	[6]number of transversions (1st ALT)	[7]number of indels
 QUAL	0	30.4	0	0	0	2
-QUAL	0	31.6	10	8	2	0
-QUAL	0	32.4	14	6	8	0
+QUAL	0	31.6	6	4	2	0
+QUAL	0	32.4	14	7	7	0
 QUAL	0	33.4	1	1	0	0
 QUAL	0	34.4	1	0	1	0
-QUAL	0	35.4	140	90	50	0
-QUAL	0	37.3	15	9	6	0
+QUAL	0	35.4	138	89	49	0
+QUAL	0	37.3	22	15	7	0
 QUAL	0	45.2	0	0	0	1
 QUAL	0	57.3	1	1	0	0
 QUAL	0	58.3	1	1	0	0
 QUAL	0	63.2	0	0	0	2
-QUAL	0	63.3	3	3	0	0
+QUAL	0	63.3	2	2	0	0
+QUAL	0	63.8	1	0	1	0
 QUAL	0	69.2	0	0	0	1
-QUAL	0	73.6	1	1	0	0
-QUAL	0	78.3	6	5	1	0
-QUAL	0	109.1	1	0	1	0
+QUAL	0	78.3	8	5	3	0
+QUAL	0	85.1	1	1	0	0
 QUAL	0	114.8	3	3	0	0
 QUAL	0	121.8	4	3	1	0
 # IDD, InDel distribution:
@@ -71,17 +71,17 @@ IDD	0	-1	4	0	.
 IDD	0	1	2	0	.
 # ST, Substitution types:
 # ST	[2]id	[3]type	[4]count
-ST	0	A>C	9
-ST	0	A>G	30
+ST	0	A>C	8
+ST	0	A>G	26
 ST	0	A>T	6
 ST	0	C>A	21
 ST	0	C>G	5
-ST	0	C>T	27
-ST	0	G>A	39
+ST	0	C>T	35
+ST	0	G>A	37
 ST	0	G>C	3
 ST	0	G>T	16
-ST	0	T>A	4
-ST	0	T>C	35
+ST	0	T>A	5
+ST	0	T>C	34
 ST	0	T>G	7
 # DP, depth:
 #   - set id, see above
@@ -92,7 +92,9 @@ ST	0	T>G	7
 #   - fraction of sites with this depth
 # DP, Depth distribution
 # DP	[2]id	[3]bin	[4]number of genotypes	[5]fraction of genotypes (%)	[6]number of sites	[7]fraction of sites (%)
-DP	0	1	0	0.000000	153	73.913043
-DP	0	2	0	0.000000	40	19.323671
-DP	0	3	0	0.000000	10	4.830918
-DP	0	4	0	0.000000	4	1.932367
+DP	0	1	0	0.000000	152	72.727273
+DP	0	2	0	0.000000	46	22.009569
+DP	0	3	0	0.000000	7	3.349282
+DP	0	4	0	0.000000	1	0.478469
+DP	0	6	0	0.000000	2	0.956938
+DP	0	8	0	0.000000	1	0.478469
