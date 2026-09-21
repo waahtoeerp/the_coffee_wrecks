@@ -24,11 +24,15 @@ DEDUP=$BASE/bwa-out/${SAMPLE}_dedup.bam
 
 mkdir -p $BASE/mapDamage-out
 
+# VALIDATION_STRINGENCY=LENIENT: same reason as add_readgroups.sh — bwa
+# sampe can emit an unmapped read with a stale nonzero MAPQ, which
+# Picard's STRICT default hard-fails on. See that script's comment.
 picard MarkDuplicates \
     I=$INBAM \
     O=$DEDUP \
     M=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt \
-    REMOVE_DUPLICATES=true
+    REMOVE_DUPLICATES=true \
+    VALIDATION_STRINGENCY=LENIENT
 
 samtools index $DEDUP
 

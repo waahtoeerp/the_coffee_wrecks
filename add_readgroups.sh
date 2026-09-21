@@ -25,6 +25,16 @@ mkdir -p $BASE/bwa-out
 # Runs right after bwa-vrouw.sh, before mapDamage_vrouw_maria.sh's
 # MarkDuplicates step — Picard's MarkDuplicates requires @RG-tagged input
 # and throws a NullPointerException without it (bwa aln/sampe never adds RG).
+#
+# VALIDATION_STRINGENCY=LENIENT (added 2026-09-21): bwa sampe (the legacy
+# aligner used here specifically for aDNA, see PIPELINE.md's "bwa aln
+# parameters") can occasionally emit an unmapped read with a stale nonzero
+# MAPQ -- technically a SAM spec violation, but not something Picard needs
+# to hard-fail on. Picard's STRICT default rejected R0003's whole file
+# over exactly one such record (SAM validation error:
+# INVALID_MAPPING_QUALITY). This dataset's unusually non-standard pairing
+# (~0.003% properly paired, see the signal-funnel finding in PIPELINE.md)
+# makes this more likely to surface than in typical modern-DNA data.
 picard AddOrReplaceReadGroups \
     I=$INBAM \
     O=$OUTBAM \
@@ -32,7 +42,8 @@ picard AddOrReplaceReadGroups \
     RGLB=lib1 \
     RGPL=ILLUMINA \
     RGPU=unit1 \
-    RGSM=$SAMPLE
+    RGSM=$SAMPLE \
+    VALIDATION_STRINGENCY=LENIENT
 
 samtools index $OUTBAM
 
