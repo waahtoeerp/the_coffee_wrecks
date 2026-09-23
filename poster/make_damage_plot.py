@@ -7,7 +7,7 @@ damaged original molecule don't inflate the apparent signal).
 
 Standard aDNA misincorporation-plot convention: C->T (5' end) in red,
 G->A (3' end) in blue, both on the same axes per sample -- one panel per
-sample, 2x2 grid for the 4 samples.
+sample, all 4 samples in a single row.
 
 Usage: python3 make_damage_plot.py
 Run directly on the Roihu login node -- lightweight, no sbatch needed.
@@ -32,8 +32,7 @@ def read_freq(path):
             freqs.append(float(val))
     return positions, freqs
 
-fig, axes = plt.subplots(2, 2, figsize=(9, 7), sharex=True, sharey=True)
-axes = axes.flatten()
+fig, axes = plt.subplots(1, 4, figsize=(16, 3.2), sharex=True, sharey=True)
 
 for ax, sample in zip(axes, SAMPLES):
     d = os.path.join(BASE, "mapDamage-out", f"{sample}_mapDamage_dedup")
@@ -43,15 +42,12 @@ for ax, sample in zip(axes, SAMPLES):
     ax.plot(p3, f3, color=GTOA_COLOR, linewidth=1.8, label="G→A (3′ end)")
     ax.set_title(sample, fontsize=11)
     ax.set_ylim(0, 0.06)
+    ax.set_xlabel("Position (bp from read end)")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.grid(axis="y", alpha=0.2)
 
-for ax in axes[2:]:
-    ax.set_xlabel("Position (bp from read end)")
-for ax in axes[::2]:
-    ax.set_ylabel("Substitution frequency")
-
+axes[0].set_ylabel("Substitution frequency")
 axes[0].legend(loc="upper right", fontsize=9, frameon=False)
 fig.suptitle("Ancient-DNA deamination signature (post-dedup)", fontsize=13)
 fig.tight_layout(rect=[0, 0, 1, 0.96])
