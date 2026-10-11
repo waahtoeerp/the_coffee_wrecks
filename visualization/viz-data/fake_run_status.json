@@ -1,0 +1,27 @@
+{
+  "run": "FAKE01 synthetic end-to-end test",
+  "generated": "2026-10-11",
+  "test_base": "/scratch/project_2019675/cw_test",
+  "input": {
+    "pairs": 4000,
+    "region_bp": 2000000,
+    "generator": "tests/make_fake_reads.py (seed 1)"
+  },
+  "stages": [
+    {"stage": "setup_reference", "job": 2193459, "scheduler_state": "COMPLETED", "output_check": "reference indexed (skipped, already present)", "status": "pass"},
+    {"stage": "fastqc", "job": 2193460, "scheduler_state": "COMPLETED", "output_check": "not inspected", "status": "pass"},
+    {"stage": "bwa-vrouw", "job": 2193461, "scheduler_state": "COMPLETED", "output_check": "sorted BAM written and deleted by cleanup as designed", "status": "pass"},
+    {"stage": "add_readgroups", "job": 2193462, "scheduler_state": "COMPLETED", "output_check": "RG BAM written", "status": "pass"},
+    {"stage": "mapDamage_dedup", "job": 2193463, "scheduler_state": "COMPLETED", "output_check": "rescaled BAM present (273 KB)", "status": "pass"},
+    {"stage": "mapDamage_rescale", "job": 2193464, "scheduler_state": "COMPLETED", "output_check": "5pCtoT pos1 = 0.344, 3pGtoA pos1 = 0.146", "status": "pass"},
+    {"stage": "gatk_hc", "job": 2193465, "scheduler_state": "COMPLETED", "output_check": "g.vcf.gz with 5412 records", "status": "pass"},
+    {"stage": "genotype_gvcf", "job": 2193466, "scheduler_state": "COMPLETED", "output_check": "raw VCF with 173 records", "status": "pass"},
+    {"stage": "gatk_filter", "job": 2193467, "scheduler_state": "COMPLETED", "output_check": "filtered VCF: 0 PASS, 133 LowDP, 40 LowDP;LowMQ", "status": "warn"}
+  ],
+  "summary": {
+    "all_stages_completed": true,
+    "filtered_pass_variants": 0,
+    "filtered_variants_total": 173,
+    "interpretation": "Pipeline runs end to end with no manual intervention. Synthetic reads contain no planted variants, so the 173 calls are sequencing-error and damage artifacts at depth 1-2 and are correctly removed by the filters. Not yet a test of variant-calling accuracy: needs higher depth and planted true variants."
+  }
+}
