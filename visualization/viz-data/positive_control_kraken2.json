@@ -1,0 +1,171 @@
+{
+  "description": "Kraken2 positive control: deduplicated, rescaled mapped reads from the base pipeline, classified against the coffee database and a parents-only database.",
+  "generated": "2026-10-11",
+  "source": "CW_metagenomic_screening/positive_control.sh",
+  "databases": {
+    "coffee_kraken2_db": "includes ET-39 reference (circular check)",
+    "parents_kraken2_db": "C. canephora + C. eugenioides only (no ET-39)"
+  },
+  "samples": {
+    "CT600-007R0002": {
+      "coffee_kraken2_db": {
+        "mapped_reads": 2620,
+        "unclassified": 3614,
+        "coffea_clade_reads": 2620,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 1456,
+        "species": {
+          "13443": {
+            "name": "Coffea arabica",
+            "reads": 906
+          },
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 191
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 67
+          }
+        }
+      },
+      "parents_kraken2_db": {
+        "mapped_reads": 2560,
+        "unclassified": 3674,
+        "coffea_clade_reads": 2560,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 818,
+        "species": {
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 918
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 824
+          }
+        }
+      }
+    },
+    "CT600-007R0003": {
+      "coffee_kraken2_db": {
+        "mapped_reads": 2014,
+        "unclassified": 2611,
+        "coffea_clade_reads": 2014,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 1118,
+        "species": {
+          "13443": {
+            "name": "Coffea arabica",
+            "reads": 655
+          },
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 174
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 67
+          }
+        }
+      },
+      "parents_kraken2_db": {
+        "mapped_reads": 1980,
+        "unclassified": 2645,
+        "coffea_clade_reads": 1980,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 684,
+        "species": {
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 697
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 599
+          }
+        }
+      }
+    },
+    "CT600-007R0004": {
+      "coffee_kraken2_db": {
+        "mapped_reads": 2298,
+        "unclassified": 2871,
+        "coffea_clade_reads": 2298,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 1293,
+        "species": {
+          "13443": {
+            "name": "Coffea arabica",
+            "reads": 758
+          },
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 175
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 72
+          }
+        }
+      },
+      "parents_kraken2_db": {
+        "mapped_reads": 2277,
+        "unclassified": 2892,
+        "coffea_clade_reads": 2277,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 807,
+        "species": {
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 779
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 691
+          }
+        }
+      }
+    },
+    "CT600-007R0005": {
+      "coffee_kraken2_db": {
+        "mapped_reads": 1057,
+        "unclassified": 2660,
+        "coffea_clade_reads": 1057,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 653,
+        "species": {
+          "13443": {
+            "name": "Coffea arabica",
+            "reads": 205
+          },
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 118
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 81
+          }
+        }
+      },
+      "parents_kraken2_db": {
+        "mapped_reads": 1044,
+        "unclassified": 2673,
+        "coffea_clade_reads": 1044,
+        "coffea_pct": 100.0,
+        "coffea_genus_direct_reads": 603,
+        "species": {
+          "49390": {
+            "name": "Coffea canephora",
+            "reads": 244
+          },
+          "49369": {
+            "name": "Coffea eugenioides",
+            "reads": 197
+          }
+        }
+      }
+    }
+  }
+}
