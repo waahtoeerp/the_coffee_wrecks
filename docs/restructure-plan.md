@@ -4,40 +4,116 @@ Status: planning only. No existing files have been moved. Moving them changes th
 
 ## Goal
 
-A person can run the pipeline by hand, see what state it is in, and trust that a failed stage stops the run and says why. No AI is needed in the execution path.
+Several analyses run on the same samples and the same reference, and each one is reproducible, runnable by hand, and fails loudly. No AI is needed in the execution path.
 
-## What we are doing now
+## Concepts
 
-Keep the project small. The pipeline has one analysis, one reference and four samples, so this plan adds only what solves current problems:
+- **Samples and references are shared.** They are defined once and referenced by name.
+- **The base** is the alignment chain every analysis starts from: trimming, `bwa`, read groups, deduplication, damage rescaling. It runs once per sample. Its outputs are the verified baseline (`baseline-2026-09-21`).
+- **An analysis** is a folder that takes the base outputs as input and produces its own results. Examples: variant calling, a different filter, a new damage model, a comparison.
+- **Outputs are never copied.** An analysis that needs base output names it by path in its config.
 
-1. **`samples.tsv`**: one file listing sample IDs and read paths. Replaces sample names hardcoded in about 13 scripts.
-2. **`pipeline/check.sh`**: checks inputs, modules and the reference before anything is submitted. A failed check stops the run and says why.
-3. **`pipeline/status.sh`**: one table, samples by stages, showing done, failed, or not started.
-4. **Done-markers, written only after the stage's output checks pass.** A stage never writes its marker on exit code alone. For example, `bwa` writes its marker only after `samtools quickcheck` passes on the BAM. This is what stops the `COMPLETED`-but-wrong problem from coming back.
-5. **`RUN_ME.sh`** in the project root. It runs `check.sh`, then submits every stage as one SLURM dependency chain with `afterok`, the same mechanism `run_pipeline.sh` uses now. The chain keeps the cluster busy and means a failed stage cancels the rest. `RUN_ME.sh status` and `RUN_ME.sh --dry-run` show the state and the commands without submitting anything.
-6. **Outputs outside the repo.** `pipeline/config.sh` sets one outputs root on scratch. Logs and outputs are gitignored.
+## Target layout
 
-## Deferred until a second project exists
+```
+the_coffee_wrecks/
+  README.md                    start here: what exists, and the one command per analysis
+  data/
+    samples/samples.tsv        sample ID, read paths, sequencing info (shared by all analyses)
+    references/
+      coffea_arabica_ET39/
+        manifest.env           source URL, checksum, output names, tool versions
+        fetch.sh               download, verify, index; writes a built marker
+  pipeline/
+    config.sh                  account, base path, mail address, OUTPUTS root: defined once
+    lib.sh                     die(), done-marker helpers, output-check helpers
+    check.sh                   checks samples, reference, modules, and upstream markers
+    status.sh                  one table: analyses by samples by stages
+    stages/                    shared stage scripts, each parameterised by its config
+      bwa.sh
+      add_readgroups.sh
+      dedup.sh
+      rescale.sh
+      gatk_hc.sh
+      genotype_gvcf.sh
+      gatk_filter.sh
+  analyses/
+    base/
+      RUN_ME.sh                runs the shared chain for every sample
+      config.sh                samples, reference, parameters
+      notes.md                 decisions and why
+    variant_call/
+      RUN_ME.sh
+      config.sh                input: base outputs; parameters for this analysis
+      notes.md
+      stages/                  stage scripts that only this analysis uses
+  visualization/               unchanged for now
+  docs/
+```
 
-- `data/references/` with manifests and a template. One reference is enough for now.
-- `projects/_template/`. Copy one project's layout when a second project actually exists.
-- `pipeline/stages/` shared stage scripts, and the projects index file.
-- A `visualization/` restructure. It stays as it is.
+Outputs live outside the repo, under `OUTPUTS` from `pipeline/config.sh`, one folder per analysis:
 
-## The screening repo
+```
+$OUTPUTS/base/<SAMPLE>/...
+$OUTPUTS/variant_call/<SAMPLE>/...
+```
 
-`CW_metagenomic_screening` stays a separate repo for now. It consumes the coffee outputs by path, through its own config, and does not get copied into this tree. Its own `README.md` documents its run steps. Folding it in is a decision for later, once the core above works.
+Each analysis folder has a gitignored `output/` symlink to its place under `$OUTPUTS` and a gitignored `log/` folder.
+
+## How a run works
+
+`RUN_ME.sh` in each analysis does three things:
+
+1. Reads its `config.sh`, then `pipeline/config.sh`.
+2. Runs `pipeline/check.sh`. This checks the samples, the reference, the modules, and every upstream input. If an upstream analysis has not finished, the check names it, for example "run base first".
+3. Submits its stages as one SLURM dependency chain with `afterok`, the same mechanism `run_pipeline.sh` uses now.
+
+Usage, the same for every analysis:
+
+```
+./RUN_ME.sh              submit whatever is not done yet
+./RUN_ME.sh status       show the table, submit nothing
+./RUN_ME.sh --dry-run    show the commands that would be submitted
+```
+
+`pipeline/status.sh` prints one table covering all analyses, so you can see what is done, failed or waiting at a glance.
+
+## Done-markers and output checks
+
+- A stage writes its done-marker only after its output checks pass. Exit code alone is never enough. Example: `bwa` writes its marker only after `samtools quickcheck` passes on the BAM.
+- Markers are per analysis, per sample, per stage, under that analysis's `output/`.
+- Each analysis's `notes.md` lists the output check for each of its stages.
+
+## Shared code versus analysis code
+
+- **Shared stages** in `pipeline/stages/` are used by more than one analysis. They take all their parameters from the calling analysis's config, so one script serves every analysis.
+- **Analysis-specific stages** live in that analysis's `stages/` folder.
+- A change to a shared stage affects every analysis that uses it. Each run records the git commit it ran from, so any result can be reproduced.
+- Before changing a shared stage for a new analysis, check that the base still reproduces the verified results (baseline VCF counts: R0002=233, R0003=209, R0004=208, R0005=63).
+
+## Run manifest
+
+Each analysis writes a manifest into its output folder at the start of a run: the git commit, the config contents, the sample list and the date. This makes every result traceable to the code and settings that produced it.
+
+## Migration order
+
+1. Build `pipeline/` and `data/samples/` alongside the current scripts, without moving anything.
+2. Port the base chain into `analyses/base/` and `pipeline/stages/`, and check that it reproduces the baseline counts on the four samples.
+3. Add the first new analysis (`variant_call` or the next one) on top of the base outputs.
+4. Move `visualization/` Roihu steps into the analyses once they are stable.
+
+Steps 1–2 run only after the Roihu deployment is verified.
 
 ## Rules
 
-- A stage script must not succeed without writing its done-marker, and must not write its marker unless its output checks pass.
-- Data is never copied between projects. A project that needs another's output names it by path.
+- A stage must not succeed without writing its done-marker, and must not write it unless its output checks pass.
+- Data is never copied between analyses. An analysis that needs another's output names it by path.
 - `data/` and `pipeline/` hold small text files and shared helpers only. Large files are gitignored.
 - Logs and outputs never go into git.
 
-## Open questions before applying
+## Open questions
 
-- What exactly counts as a passing output check for each stage? Write the list before applying, one line per stage.
+- Which analysis comes next? Its needs decide the exact shared-stage interface, so the first port should be done with it in mind.
+- The screening repo, `CW_metagenomic_screening`: keep it separate and read base outputs by path, or fold it in as an analysis? It is a second repo, so that is a decision for you.
 - `poster/` and `claude-backup/` are not part of the pipeline. Move them out of the root, or leave them?
-- `visualization/` mixes Roihu extraction steps with local plotting. Do the Roihu steps move into the pipeline, and the local steps stay in `visualization/`?
-- `.gitignore` needs explicit exceptions for `samples.tsv` and the status files, and must ignore the outputs and logs folders.
+- `.gitignore` needs exceptions for `samples.tsv`, the reference manifests and the run manifests, and must ignore the outputs and logs folders.
