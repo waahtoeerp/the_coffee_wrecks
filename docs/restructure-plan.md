@@ -2,6 +2,58 @@
 
 Status: planning only. No existing files have been moved. Moving them changes the paths that Roihu jobs use, so that happens in a separate step, after the Roihu deployment in [deploy-roihu.md](deploy-roihu.md) is verified.
 
+## Handoff (read this first)
+
+Last updated 2026-10-23.
+
+**Blocker.** Do not run anything on Roihu for this work until the security issue on Roihu is closed and CSC has confirmed the cluster is usable for this project. [deploy-roihu.md](deploy-roihu.md) has the checklist. Until then, only local edits, docs and `.gitignore` changes are safe.
+
+**Where things stand**
+
+- The verified baseline is the git tag `baseline-2026-09-21` (commit `140c62b`): all four samples through the pipeline, filtered variant counts R0002=233, R0003=209, R0004=208, R0005=63.
+- Base pipeline changes since the baseline are on `dev`. Latest relevant commits:
+  - `c9313d6`: `bwa-vrouw.sh` always rebuilds `.sai` files instead of reusing them (stale-file risk removed; a resubmission after a timeout now repeats `bwa aln`).
+  - `94c0198`: `PIPELINE.md` updated to match.
+  - `3f1a68e`: `.gitignore` exceptions for `samples.tsv`, reference manifests and run manifests; outputs and logs ignored.
+- Kraken2 screening (repo `CW_metagenomic_screening`, `main`): the positive control passed on both databases. The parents-only database (no ET-39 reference) is the meaningful test; it classifies 100% of the mapped reads as *Coffea*. Summary: `visualization/viz-data/positive_control_kraken2.json`.
+- A synthetic end-to-end run (FAKE01) completed every stage. It was a plumbing test only; the synthetic data has no planted variants, so the result (0 PASS) says nothing about calling accuracy. It is not needed further.
+
+**Uncommitted in `the_coffee_wrecks` (decide before committing)**
+
+- The `CW_BASE` override (`BASE=${CW_BASE:-...}`) in 12 scripts. Harmless default, but it is only useful for the fake-data test, which is no longer needed. Either commit it or revert it.
+- `tests/make_fake_reads.py`: the fake-data generator. Keep it only if the plumbing test is wanted again.
+- Untracked `output_*.txt`, `errors_*.txt` and `slurm-*` files at the repo root. These are job logs and should not be committed.
+
+**Known issues to fix in the restructure**
+
+- `build_coffee_kraken2_db.sh` and `build_parents_kraken2_db.sh` need a taxonomy folder that `kraken2-build --clean` deletes. The taxonomy should be kept in a stable place (for example `data/` or a `pipeline/` cache) and copied from there.
+- `PIPELINE.md` and `README.md` both describe the old `.sai` behaviour in places; the 2026-10-23 entry supersedes them, but the rows should be tidied when the docs are next edited.
+- The mapDamage version was wrong in an earlier script (`2.2.2`); both scripts now load `2.2.3`. Check on the first run after deployment.
+
+**Next steps, in order**
+
+1. Wait for the Roihu security issue to be closed and confirmed by CSC.
+2. Settle the uncommitted items above.
+3. Write `pipeline/config.sh`, `pipeline/check.sh`, `pipeline/status.sh` and `data/samples/samples.tsv` next to the current scripts, without moving anything.
+4. Port the base chain into `analyses/base/` and `pipeline/stages/`. Check it reproduces the baseline counts on all four samples.
+5. Add the first new analysis on top of the base outputs.
+
+**Decisions already made**
+
+- Samples and references are shared; outputs are never copied between analyses.
+- Done-markers are written only after output checks pass; an exit code alone is never enough.
+- `RUN_ME.sh` submits each analysis's stages as one SLURM chain with `afterok`.
+- Run manifests are tracked in `analyses/<name>/manifests/`.
+- The screening repo stays separate and reads base outputs by path, pending the open question below.
+- Roihu runs are started by a person from a terminal, not by an AI tool.
+
+**Open questions**
+
+- Which analysis comes next? Its needs decide the shared-stage interface.
+- Keep `CW_metagenomic_screening` separate, or make it an analysis?
+- Move `poster/` and `claude-backup/` out of the repo root, or leave them?
+- The Roihu steps in `visualization/`: move them into analyses once stable, or keep them where they are?
+
 ## Goal
 
 Several analyses run on the same samples and the same reference, and each one is reproducible, runnable by hand, and fails loudly. No AI is needed in the execution path.
