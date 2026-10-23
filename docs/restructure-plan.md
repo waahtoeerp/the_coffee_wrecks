@@ -6,7 +6,7 @@ Status: planning only. No existing files have been moved. Moving them changes th
 
 Last updated 2026-10-23.
 
-**Blocker.** Do not run anything on Roihu for this work until the security issue on Roihu is closed and CSC has confirmed the cluster is usable for this project. [deploy-roihu.md](deploy-roihu.md) has the checklist. Until then, only local edits, docs and `.gitignore` changes are safe.
+**Roihu is open again.** The login node was confirmed working on 2026-10-23. The deploy checklist in [deploy-roihu.md](deploy-roihu.md) still applies to every run.
 
 **Where things stand**
 
@@ -32,8 +32,7 @@ Last updated 2026-10-23.
 
 **Next steps, in order**
 
-1. Wait for the Roihu security issue to be closed and confirmed by CSC.
-2. Settle the uncommitted items above.
+1. Settle the uncommitted items above.
 3. Write `pipeline/config.sh`, `pipeline/check.sh`, `pipeline/status.sh` and `data/samples/samples.tsv` next to the current scripts, without moving anything.
 4. Port the base chain into `analyses/base/` and `pipeline/stages/`. Check it reproduces the baseline counts on all four samples.
 5. Add the first new analysis on top of the base outputs.

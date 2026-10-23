@@ -1,12 +1,12 @@
 # Deploying the restructured pipeline on Roihu
 
-Status: written in advance. Do not run these steps until the security issue on Roihu is resolved and CSC confirms the cluster is usable for this project.
+Status: ready to use. Roihu is open again and the login node is confirmed working.
 
 The steps assume the restructure in [restructure-plan.md](restructure-plan.md) has been applied and committed. They are written so that each step can be checked before the next one runs.
 
 ## Before you start
 
-- [ ] The security issue on Roihu is closed, and you have confirmed the fix with CSC or the project administrator.
+- [x] Roihu login node is working (confirmed 2026-10-23).
 - [ ] You know which login node and account you will use. The account is in `pipeline/config.sh`. Do not guess it.
 - [ ] You have checked the current CSC rules on automated tools and connections, as noted in the pipeline guide.
 - [ ] You have checked which area of scratch is purged and how often. Reference libraries may need to live in project storage instead.
