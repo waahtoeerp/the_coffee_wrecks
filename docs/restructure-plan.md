@@ -1,96 +1,43 @@
 # Restructure plan (proposal, not yet applied)
 
-Status: planning only. No existing files have been moved. Moving them changes the paths that Roihu jobs use, so that happens in a separate step after the Roihu deployment in [deploy-roihu.md](deploy-roihu.md) is verified.
+Status: planning only. No existing files have been moved. Moving them changes the paths that Roihu jobs use, so that happens in a separate step, after the Roihu deployment in [deploy-roihu.md](deploy-roihu.md) is verified.
 
-## Idea
+## Goal
 
-Each analysis is a self-contained project: its own stage scripts, its own settings, its own notes, and its own logs. Shared things live in one place only when they really are shared: the reference libraries, the sample list, and the small helper code.
+A person can run the pipeline by hand, see what state it is in, and trust that a failed stage stops the run and says why. No AI is needed in the execution path.
 
-Two kinds of thing are shared differently:
+## What we are doing now
 
-- **Code is copied into a project** when the project needs it. A project stays readable and runnable on its own, and git history shows which version each project used.
-- **Data is never copied.** A project that needs another project's output points to it by path. The output exists once.
+Keep the project small. The pipeline has one analysis, one reference and four samples, so this plan adds only what solves current problems:
 
-A person should be able to open the repo, read the root `README.md`, and run one command per project.
+1. **`samples.tsv`**: one file listing sample IDs and read paths. Replaces sample names hardcoded in about 13 scripts.
+2. **`pipeline/check.sh`**: checks inputs, modules and the reference before anything is submitted. A failed check stops the run and says why.
+3. **`pipeline/status.sh`**: one table, samples by stages, showing done, failed, or not started.
+4. **Done-markers, written only after the stage's output checks pass.** A stage never writes its marker on exit code alone. For example, `bwa` writes its marker only after `samtools quickcheck` passes on the BAM. This is what stops the `COMPLETED`-but-wrong problem from coming back.
+5. **`RUN_ME.sh`** in the project root. It runs `check.sh`, then submits every stage as one SLURM dependency chain with `afterok`, the same mechanism `run_pipeline.sh` uses now. The chain keeps the cluster busy and means a failed stage cancels the rest. `RUN_ME.sh status` and `RUN_ME.sh --dry-run` show the state and the commands without submitting anything.
+6. **Outputs outside the repo.** `pipeline/config.sh` sets one outputs root on scratch. Logs and outputs are gitignored.
 
-## Target layout
+## Deferred until a second project exists
 
-```
-the_coffee_wrecks/
-  README.md                  start here: the projects, and the one command for each
-  data/
-    samples/
-      samples.tsv            the vrouw_maria samples: ID, read paths on scratch, sequencing info
-    references/
-      _template/             copy this to add a reference
-      coffea_arabica_ET39/
-        manifest.env         source URL, checksum, output filename, tool versions
-        fetch.sh             download, verify, index; writes built.txt
-  pipeline/                  shared helpers only; projects source these, they do not copy them
-    config.sh                account, base path, mail address, outputs root: defined once
-    lib.sh                   die(), done-marker helpers, input checks
-    check.sh                 checks inputs and modules before anything is submitted
-    status.sh                one table: samples by stages
-  projects/
-    _template/               copy this to start a project
-      RUN_ME.sh              the one command for this project
-      config.sh              samples, reference, stage list, inputs (paths to other projects' outputs if needed)
-      notes.md               the question, the decisions, and why
-    variant_call/
-      RUN_ME.sh
-      config.sh
-      notes.md               lab diary
-      bwa.sh                 this project's own copy of each stage it runs
-      gatk_hc.sh
-      genotype_gvcf.sh
-      gatk-filter.sh
-      output/                symlink to $OUTPUTS/variant_call (gitignored)
-      log/                   Slurm logs, named by stage and sample (gitignored)
-  docs/
-    restructure-plan.md      this file
-    deploy-roihu.md          steps to deploy once Roihu is usable again
-    PIPELINE.md, ...         existing reference docs
-  visualization/             unchanged for now; the local part belongs to CW_viz_pipeline
-```
+- `data/references/` with manifests and a template. One reference is enough for now.
+- `projects/_template/`. Copy one project's layout when a second project actually exists.
+- `pipeline/stages/` shared stage scripts, and the projects index file.
+- A `visualization/` restructure. It stays as it is.
 
-Outputs are not stored inside the repo tree. `pipeline/config.sh` defines one outputs root on scratch, for example `OUTPUTS=/scratch/project_2019675/outputs`. Each project writes to `$OUTPUTS/<project>/`. The `output/` folder in the project is a symlink to that place, so a person browsing the project still sees its results there. Outputs are gitignored, as they are today.
+## The screening repo
 
-## RUN_ME.sh
+`CW_metagenomic_screening` stays a separate repo for now. It consumes the coffee outputs by path, through its own config, and does not get copied into this tree. Its own `README.md` documents its run steps. Folding it in is a decision for later, once the core above works.
 
-Each project has one `RUN_ME.sh`. It does three things and nothing else:
+## Rules
 
-1. Reads its own `config.sh`, and the shared settings from `pipeline/config.sh`.
-2. Runs `pipeline/check.sh`. This checks the samples, the reference, the modules, and any input from another project. If a check fails, it stops and says why, including which project to run first.
-3. Runs each stage in order, using the project's own scripts. A stage with a done-marker is skipped.
-
-Usage:
-
-```
-./RUN_ME.sh           run everything that is not done yet
-./RUN_ME.sh status    show the table, submit nothing
-./RUN_ME.sh --dry-run show the commands that would be submitted
-```
-
-Nothing is submitted unless the person runs `./RUN_ME.sh` without a flag.
-
-## Sharing between projects
-
-**Code.** Each project keeps its own copy of every stage script it runs. Changing a copy affects only that project. If another project should get the change, copy it deliberately and note the copy in both projects' `notes.md`. Once three projects carry the same stage, move the shared version into `pipeline/stages/` and have the projects call it from there.
-
-**Data.** Never copy outputs between projects. If project B needs project A's output, B's `config.sh` names it by path, for example `INPUT_BAM=$OUTPUTS/variant_call/bwa/sample_rg.bam`. `check.sh` confirms the file exists and that its done-marker is present before B runs. If it is missing, B stops and names project A as the one to run first.
-
-**References and samples.** Shared by name through `data/`. A project never contains a path to a reference, only its folder name.
-
-## Rules that make this work
-
-- `data/` holds manifests and small text files only. Large files are fetched or built by a script and gitignored.
-- A new reference is added by copying `data/references/_template/`, not by editing an existing one.
+- A stage script must not succeed without writing its done-marker, and must not write its marker unless its output checks pass.
+- Data is never copied between projects. A project that needs another's output names it by path.
+- `data/` and `pipeline/` hold small text files and shared helpers only. Large files are gitignored.
 - Logs and outputs never go into git.
 
 ## Open questions before applying
 
+- What exactly counts as a passing output check for each stage? Write the list before applying, one line per stage.
 - `poster/` and `claude-backup/` are not part of the pipeline. Move them out of the root, or leave them?
-- `visualization/` mixes Roihu extraction steps with local plotting. Should the Roihu steps move into their project folder and the local steps stay in `visualization/`?
-- `.gitignore` ignores `data/*`. The `samples.tsv` and reference manifests will need explicit `!` exceptions when they are added. It will also need `projects/*/output/` and `projects/*/log/`.
-- Shell or Python for the shared helpers. The stage scripts stay in bash, since they run on the cluster. Python would suit `status.sh` and the doc generation, but this depends on which Python Roihu has, so it is deferred.
-- Deferred: a `projects/` index file listing each project and its question. Not needed yet; the folder names and each `notes.md` are enough. Revisit when there are more than four or five projects.
+- `visualization/` mixes Roihu extraction steps with local plotting. Do the Roihu steps move into the pipeline, and the local steps stay in `visualization/`?
+- `.gitignore` needs explicit exceptions for `samples.tsv` and the status files, and must ignore the outputs and logs folders.
