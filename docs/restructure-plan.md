@@ -93,7 +93,7 @@ Usage, the same for every analysis:
 
 ## Run manifest
 
-Each analysis writes a manifest into its output folder at the start of a run: the git commit, the config contents, the sample list and the date. This makes every result traceable to the code and settings that produced it.
+Each analysis writes a manifest into `analyses/<name>/manifests/` at the start of a run: the git commit, the config contents, the sample list and the date. The manifests are small and tracked in git, so they live in the repo rather than under `$OUTPUTS`. This makes every result traceable to the code and settings that produced it.
 
 ## Migration order
 
@@ -116,4 +116,3 @@ Steps 1–2 run only after the Roihu deployment is verified.
 - Which analysis comes next? Its needs decide the exact shared-stage interface, so the first port should be done with it in mind.
 - The screening repo, `CW_metagenomic_screening`: keep it separate and read base outputs by path, or fold it in as an analysis? It is a second repo, so that is a decision for you.
 - `poster/` and `claude-backup/` are not part of the pipeline. Move them out of the root, or leave them?
-- `.gitignore` needs exceptions for `samples.tsv`, the reference manifests and the run manifests, and must ignore the outputs and logs folders.

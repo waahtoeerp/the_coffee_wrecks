@@ -7,10 +7,28 @@ venv/
 
 # Data files
 data/*
+!data/samples/
+!data/samples/samples.tsv
+!data/references/
+!data/references/*/
+!data/references/*/manifest.env
+!data/references/*/fetch.sh
 *.zip
 *.fasta
 *.fastq
 *.gz
+*.fna
+*.fai
+*.dict
+*.bwt
+*.pac
+*.ann
+*.amb
+*.sa
+*.bam
+*.bai
+*.sai
+*.vcf
 
 # Logs
 *.log
@@ -56,4 +74,10 @@ vrouw_maria_2026/*
 # that comparison the moment new output overwrites old.
 
 output-id/*
+
+# Analyses: results live under $OUTPUTS (outside the repo); the output/ symlink
+# and log/ folders are local only. Run manifests are tracked.
+analyses/*/output/
+analyses/*/log/
+!analyses/*/manifests/
 
