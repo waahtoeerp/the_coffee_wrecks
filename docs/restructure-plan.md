@@ -33,9 +33,10 @@ Last updated 2026-10-23.
 **Next steps, in order**
 
 1. Settle the uncommitted items above.
-3. Write `pipeline/config.sh`, `pipeline/check.sh`, `pipeline/status.sh` and `data/samples/samples.tsv` next to the current scripts, without moving anything.
-4. Port the base chain into `analyses/base/` and `pipeline/stages/`. Check it reproduces the baseline counts on all four samples.
-5. Add the first new analysis on top of the base outputs.
+2. Write `pipeline/config.sh`, `pipeline/check.sh`, `pipeline/status.sh` and `data/samples/samples.tsv` next to the current scripts, without moving anything.
+3. Port the base chain into `analyses/base/` and `pipeline/stages/`. Check it reproduces the baseline counts on all four samples.
+4. Bring the metagenomic screening in as `analyses/metagenomic_screening/`, and check its outputs against the existing results.
+5. Add the next new analysis on top of the base outputs.
 
 **Decisions already made**
 
@@ -43,14 +44,14 @@ Last updated 2026-10-23.
 - Done-markers are written only after output checks pass; an exit code alone is never enough.
 - `RUN_ME.sh` submits each analysis's stages as one SLURM chain with `afterok`.
 - Run manifests are tracked in `analyses/<name>/manifests/`.
-- The screening repo stays separate and reads base outputs by path, pending the open question below.
+- The metagenomic screening (`CW_metagenomic_screening`) comes into this repo as an analysis, `analyses/metagenomic_screening/`. It is no longer a separate repo.
+- `claude-backup/` stays in this repo. It is important and is not moved.
+- `poster/` stays in the repo root for now. It will be deleted later.
 - Roihu runs are started by a person from a terminal, not by an AI tool.
 
 **Open questions**
 
-- Which analysis comes next? Its needs decide the shared-stage interface.
-- Keep `CW_metagenomic_screening` separate, or make it an analysis?
-- Move `poster/` and `claude-backup/` out of the repo root, or leave them?
+- Which analysis comes next, apart from the screening? Its needs decide the shared-stage interface.
 - The Roihu steps in `visualization/`: move them into analyses once stable, or keep them where they are?
 
 ## Goal
@@ -98,7 +99,15 @@ the_coffee_wrecks/
       config.sh                input: base outputs; parameters for this analysis
       notes.md
       stages/                  stage scripts that only this analysis uses
+    metagenomic_screening/
+      RUN_ME.sh
+      config.sh                input: base outputs (raw reads where the base has cleaned up)
+      notes.md                 lab diary, moved from CW_metagenomic_screening/LABDIARY.md
+      stages/                  subsample, Kraken2 (PlusPF-8 and coffee DB), extract, align
+      databases/               build scripts for the two Kraken2 databases; databases stay under $OUTPUTS
   visualization/               unchanged for now
+  claude-backup/               kept in this repo (important, not moved)
+  poster/                      kept in the repo root for now; to be deleted later
   docs/
 ```
 
@@ -150,10 +159,11 @@ Each analysis writes a manifest into `analyses/<name>/manifests/` at the start o
 
 1. Build `pipeline/` and `data/samples/` alongside the current scripts, without moving anything.
 2. Port the base chain into `analyses/base/` and `pipeline/stages/`, and check that it reproduces the baseline counts on the four samples.
-3. Add the first new analysis (`variant_call` or the next one) on top of the base outputs.
-4. Move `visualization/` Roihu steps into the analyses once they are stable.
+3. Bring `CW_metagenomic_screening` in as `analyses/metagenomic_screening/`. Its scripts move with their history (`git subtree` or copy with a note in `notes.md`), and its `LABDIARY.md` becomes that analysis's `notes.md`. Its inputs are the base outputs where they still exist, otherwise the raw reads, so the positive control keeps working. Check that its outputs match the existing results (`positive_control_kraken2.json`).
+4. Add the next new analysis (`variant_call` or the next one) on top of the base outputs.
+5. Move `visualization/` Roihu steps into the analyses once they are stable.
 
-Steps 1–2 run only after the Roihu deployment is verified.
+Steps 1–3 run only after the Roihu deployment is verified (the login node is confirmed working; the checklist in `deploy-roihu.md` still applies).
 
 ## Rules
 
