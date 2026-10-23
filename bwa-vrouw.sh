@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/the_coffee_wrecks
+BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
 source $BASE/load_modules.sh
 module load fastp/1.0.1
 module load bwa/0.7.19
@@ -42,16 +42,11 @@ fastp -i $R1 -I $R2 -o $TRIM_R1 -O $TRIM_R2 \
     --thread 4
 
 # Reference must already be indexed by setup_reference.sh (.bwt/.pac/.ann/.amb/.sa)
-# Align. bwa aln is the slow part (hours) and was what timed out under
-# concurrent-sample cluster contention on 2026-08-23 — skip it on resubmission
-# if the .sai already exists. This is a plain existence check, not a
-# completeness check: if a run was killed *during* bwa aln itself (rather
-# than after, like the 2026-08-23 case), delete the partial .sai and rerun.
-# NOTE: this now also means a stale .sai from before this fastp step was
-# added must be deleted manually before resubmitting, since it was built
-# from untrimmed reads and this check can't tell the difference.
-[ -f "$OUTDIR/${SAMPLE}_1.sai" ] || bwa aln -l 16500 -n 0.01 -t 4 $REF $TRIM_R1 > $OUTDIR/${SAMPLE}_1.sai
-[ -f "$OUTDIR/${SAMPLE}_2.sai" ] || bwa aln -l 16500 -n 0.01 -t 4 $REF $TRIM_R2 > $OUTDIR/${SAMPLE}_2.sai
+# .sai files are derived from the trimmed reads, so any existing ones are stale
+# once fastp has re-run. Always rebuild them.
+rm -f $OUTDIR/${SAMPLE}_1.sai $OUTDIR/${SAMPLE}_2.sai
+bwa aln -l 16500 -n 0.01 -t 4 $REF $TRIM_R1 > $OUTDIR/${SAMPLE}_1.sai
+bwa aln -l 16500 -n 0.01 -t 4 $REF $TRIM_R2 > $OUTDIR/${SAMPLE}_2.sai
 
 # Pair and convert
 bwa sampe $REF $OUTDIR/${SAMPLE}_1.sai $OUTDIR/${SAMPLE}_2.sai $TRIM_R1 $TRIM_R2 | \
@@ -66,9 +61,6 @@ samtools flagstat $OUTDIR/${SAMPLE}_sorted.bam
 # regenerate (fastp is fast, unlike bwa aln) — deleting it here is what
 # keeps 4 parallel sample chains from repeating the 2026-09-03/09-19 disk-
 # quota crises now that there's an extra ~14GB/sample of trimmed-fastq
-# intermediates in the mix. .sai is deliberately kept (see above — it's
-# the expensive step to redo). NOTE: this means a full rerun of an already-
-# completed sample needs its .sai deleted too, not just resubmission —
-# bwa sampe below needs $TRIM_R1/$TRIM_R2, which won't exist otherwise.
+# intermediates in the mix.
 rm -f $TRIM_R1 $TRIM_R2
 

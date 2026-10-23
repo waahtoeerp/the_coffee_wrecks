@@ -37,9 +37,8 @@ If a job failed, its log is `slurm-<JOBID>.out` in this directory (the `bwa-vrou
 
 ## Reruns
 
-- Each sample's `bwa aln` step is skipped if its `.sai` already exists. A `.sai` made before the fastp trimming step was added is stale: delete it before rerunning.
-- A full rerun of a completed sample needs its `.sai` deleted, since `bwa sampe` needs the trimmed reads, which get cleaned up after each run.
-- If a run was killed during `bwa aln` (not after), delete the partial `.sai` and rerun.
+- `bwa-vrouw.sh` always re-runs `fastp` and `bwa aln`, and deletes any existing `.sai` first. Rerunning a sample costs the full `bwa aln` time (hours), but a stale `.sai` can't be reused by accident.
+- Trimmed reads are deleted after each run, so a rerun regenerates them automatically; no manual cleanup is needed.
 
 ## Visualization (login node, after a sample is verified)
 
