@@ -175,5 +175,3 @@ Steps 1–3 run only after the Roihu deployment is verified (the login node is c
 ## Open questions
 
 - Which analysis comes next? Its needs decide the exact shared-stage interface, so the first port should be done with it in mind.
-- The screening repo, `CW_metagenomic_screening`: keep it separate and read base outputs by path, or fold it in as an analysis? It is a second repo, so that is a decision for you.
-- `poster/` and `claude-backup/` are not part of the pipeline. Move them out of the root, or leave them?
