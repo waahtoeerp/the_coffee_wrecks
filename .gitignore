@@ -33,6 +33,7 @@ data/*
 # Logs
 *.log
 slurm-*.out
+output_*.txt
 errors*.txt
 
 # Editor
