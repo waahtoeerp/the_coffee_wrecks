@@ -18,11 +18,7 @@ Last updated 2026-10-23.
 - Kraken2 screening (repo `CW_metagenomic_screening`, `main`): the positive control passed on both databases. The parents-only database (no ET-39 reference) is the meaningful test; it classifies 100% of the mapped reads as *Coffea*. Summary: `visualization/viz-data/positive_control_kraken2.json`.
 - A synthetic end-to-end run (FAKE01) completed every stage. It was a plumbing test only; the synthetic data has no planted variants, so the result (0 PASS) says nothing about calling accuracy. It is not needed further.
 
-**Uncommitted in `the_coffee_wrecks` (decide before committing)**
-
-- The `CW_BASE` override (`BASE=${CW_BASE:-...}`) in 12 scripts. Harmless default, but it is only useful for the fake-data test, which is no longer needed. Either commit it or revert it.
-- `tests/make_fake_reads.py`: the fake-data generator. Keep it only if the plumbing test is wanted again.
-- Untracked `output_*.txt`, `errors_*.txt` and `slurm-*` files at the repo root. These are job logs and should not be committed.
+**Working tree:** clean apart from SLURM job logs, which are now gitignored. The `CW_BASE` override is committed (`db44faf`). The fake-data generator was moved out of the repo.
 
 **Known issues to fix in the restructure**
 
