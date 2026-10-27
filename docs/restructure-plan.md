@@ -36,19 +36,21 @@ Done:
 4. Screening imported as `analyses/metagenomic_screening/` (`f6a741d`): tracked files copied, `LABDIARY.md` is now `notes.md` with a provenance header. Scripts are unchanged and still point at the original data directory.
 5. Reference manifest and fetch script in `data/references/coffea_arabica_ET39/` (`ac4f294`). `fetch.sh` verifies the NCBI checksum before and after decompressing, and does not overwrite a mismatched file. It does not index; `setup_reference.sh` does that.
 6. `analyses/base/RUN_ME.sh` writes a run manifest into `analyses/base/manifests/` before submitting (commit, date, arguments, samples, config). Root `README.md` has a "Where things are" section.
+7. Data move (`be4645c`). Base outputs (`bwa-out`, `mapDamage-out`, `gatk-out`, `fastqc-out`) are in `$OUTPUTS/base/`; the screening databases and subsamples are in `$OUTPUTS/metagenomic_screening/`; the reference is in `data/references/coffea_arabica_ET39/`. `pipeline/config.sh` defines `OUTPUTS`, `REF_DIR` and `REF`. All stage and screening scripts source it by absolute path. `analyses/*/output` symlinks point at each analysis's outputs folder, and `log/` folders exist. The stage scripts have not yet been run from the new paths on the cluster.
 
 Not done, and why:
 
 - **Reproduction run of the base chain on all four samples (step 3 check).** Not submitted: it is many hours of compute and needs the scratch disk space that has run out before. Needs your go-ahead.
 - **Shared stage scripts in `pipeline/stages/`.** Deferred until the reproduction run confirms the wrapper behaves. Refactoring the working scripts before that would make a failure hard to attribute.
-- **`analyses/metagenomic_screening/RUN_ME.sh`.** Its scripts still expect the database and results in the original directory, so a wrapper here would fail. Needs the data move first.
+- **`analyses/metagenomic_screening/RUN_ME.sh` and `config.sh`.** Not written yet. The data move is done (item 7), so the wrapper can now be written.
+- **`stages/` and `databases/` subfolders in `analyses/metagenomic_screening/`.** Not created; its scripts are still flat in the analysis folder.
 - **`git subtree` is not installed here,** and a merge-based import conflicted on the root `README.md` and `.gitignore`. The merge was aborted; the copy approach was used instead, as the plan allows. The screening repo's history stays there.
 - **Next analysis.** Not chosen yet, so no folder was created.
 
 Next steps, in order:
 
 1. Go-ahead for the four-sample reproduction run of the base chain, through `analyses/base/RUN_ME.sh`.
-2. After reproduction: move the screening data into `$OUTPUTS`, then add its `RUN_ME.sh`.
+2. Add `analyses/metagenomic_screening/RUN_ME.sh` and `config.sh`, and decide whether its scripts move into `stages/` and `databases/`.
 3. Shared stages into `pipeline/stages/`, parameterised by config, re-checked against the baseline.
 4. Choose the next analysis and add it on top of the base outputs.
 
@@ -125,12 +127,15 @@ the_coffee_wrecks/
   docs/
 ```
 
-Outputs live outside the repo, under `OUTPUTS` from `pipeline/config.sh`, one folder per analysis:
+Outputs live outside the repo, under `OUTPUTS` from `pipeline/config.sh` (`/scratch/project_2019675/outputs`), one folder per analysis. Within an analysis, outputs are grouped by stage, as the scripts already write them:
 
 ```
-$OUTPUTS/base/<SAMPLE>/...
-$OUTPUTS/variant_call/<SAMPLE>/...
+$OUTPUTS/base/bwa-out/           $OUTPUTS/base/mapDamage-out/   $OUTPUTS/base/gatk-out/
+$OUTPUTS/metagenomic_screening/results/<SAMPLE>/   ...kraken2_db/   ...coffee_kraken2_db/
+$OUTPUTS/variant_call/...        (next analysis)
 ```
+
+Grouping by sample would have meant changing every stage script's output paths at once; that can be done later, with the reproduction run.
 
 Each analysis folder has a gitignored `output/` symlink to its place under `$OUTPUTS` and a gitignored `log/` folder.
 
