@@ -14,7 +14,7 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/the_coffee_wrecks
+BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
 SAMPLE=$1
 DUPMETRICS=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt
 OUTDIR=$BASE/visualization/viz-data

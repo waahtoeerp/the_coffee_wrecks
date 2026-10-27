@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/the_coffee_wrecks
+BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
 source $BASE/load_modules.sh
 module load picard/3.3.0
 module load samtools/1.21
