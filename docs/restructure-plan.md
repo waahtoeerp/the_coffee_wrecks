@@ -30,13 +30,29 @@ Last updated 2026-10-23.
 - `PIPELINE.md` and `README.md` both describe the old `.sai` behaviour in places; the 2026-10-23 entry supersedes them, but the rows should be tidied when the docs are next edited.
 - The mapDamage version was wrong in an earlier script (`2.2.2`); both scripts now load `2.2.3`. Check on the first run after deployment.
 
-**Next steps, in order**
+**Status after the 2026-10-27 execution**
 
-1. Settle the uncommitted items above.
-2. Write `pipeline/config.sh`, `pipeline/check.sh`, `pipeline/status.sh` and `data/samples/samples.tsv` next to the current scripts, without moving anything.
-3. Port the base chain into `analyses/base/` and `pipeline/stages/`. Check it reproduces the baseline counts on all four samples.
-4. Bring the metagenomic screening in as `analyses/metagenomic_screening/`, and check its outputs against the existing results.
-5. Add the next new analysis on top of the base outputs.
+Done:
+
+1. Uncommitted items settled. `CW_BASE` override kept and committed (`db44faf`); the fake-data tests moved out of the repo.
+2. Shared layer written, without moving any existing file (`0ce8f90`): `pipeline/config.sh`, `pipeline/lib.sh`, `pipeline/check.sh`, `pipeline/status.sh`, `data/samples/samples.tsv`. `check.sh` was tested on a bad base directory and exits 1 listing every problem. `status.sh` reproduces the baseline counts (233, 209, 208, 63) from the existing outputs.
+3. Base wrapper written (`analyses/base/RUN_ME.sh`, `config.sh`, `notes.md`). It runs the check and then hands off to the existing `run_pipeline.sh`, which is unchanged. `status` and `--dry-run` were tested; nothing was submitted.
+4. Screening imported as `analyses/metagenomic_screening/` (`f6a741d`): tracked files copied, `LABDIARY.md` is now `notes.md` with a provenance header. Scripts are unchanged and still point at the original data directory.
+
+Not done, and why:
+
+- **Reproduction run of the base chain on all four samples (step 3 check).** Not submitted: it is many hours of compute and needs the scratch disk space that has run out before. Needs your go-ahead.
+- **Shared stage scripts in `pipeline/stages/`.** Deferred until the reproduction run confirms the wrapper behaves. Refactoring the working scripts before that would make a failure hard to attribute.
+- **`analyses/metagenomic_screening/RUN_ME.sh`.** Its scripts still expect the database and results in the original directory, so a wrapper here would fail. Needs the data move first.
+- **`git subtree` is not installed here,** and a merge-based import conflicted on the root `README.md` and `.gitignore`. The merge was aborted; the copy approach was used instead, as the plan allows. The screening repo's history stays there.
+- **Next analysis.** Not chosen yet, so no folder was created.
+
+Next steps, in order:
+
+1. Go-ahead for the four-sample reproduction run of the base chain, through `analyses/base/RUN_ME.sh`.
+2. After reproduction: move the screening data into `$OUTPUTS`, then add its `RUN_ME.sh`.
+3. Shared stages into `pipeline/stages/`, parameterised by config, re-checked against the baseline.
+4. Choose the next analysis and add it on top of the base outputs.
 
 **Decisions already made**
 
