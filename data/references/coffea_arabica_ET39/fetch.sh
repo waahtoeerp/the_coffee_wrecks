@@ -1,5 +1,5 @@
 #!/bin/bash
-# Download, verify and decompress the reference into ref_gen/. Run on the Roihu
+# Download, verify and decompress the reference into the reference folder (this directory). Run on the Roihu
 # login node (needs HTTPS to NCBI). Refuses to overwrite a file that fails its
 # checksum. Indexing is done by setup_reference.sh, not here.
 #
@@ -11,7 +11,6 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/manifest.env"
 source "$HERE/../../../pipeline/config.sh"
 
-REF_DIR="$BASE/ref_gen"
 OUT="$REF_DIR/$OUTPUT_FILE"
 GZ="$REF_DIR/${ASSEMBLY}_genomic.fna.gz"
 FORCE=${1:-}

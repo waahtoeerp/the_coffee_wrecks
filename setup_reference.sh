@@ -12,12 +12,12 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load gatk/4.5.0.0
 module load samtools/1.21
 module load bwa/0.7.19
 
-REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
 DICT=${REF%.fna}.dict
 
 # One-time reference indexing, needed by bwa-vrouw.sh and gatk_hc.sh.

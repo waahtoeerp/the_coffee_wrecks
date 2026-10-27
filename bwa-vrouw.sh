@@ -14,16 +14,16 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load fastp/1.0.1
 module load bwa/0.7.19
 module load samtools/1.21
 
-REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
 SAMPLE=$1
 R1=$BASE/vrouw_maria_2026_segments/Unknown_${SAMPLE}_1.fq.gz
 R2=$BASE/vrouw_maria_2026_segments/Unknown_${SAMPLE}_2.fq.gz
-OUTDIR=$BASE/bwa-out
+OUTDIR=$OUTPUTS/base/bwa-out
 TRIM_R1=$OUTDIR/${SAMPLE}_trimmed_1.fq.gz
 TRIM_R2=$OUTDIR/${SAMPLE}_trimmed_2.fq.gz
 

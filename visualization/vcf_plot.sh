@@ -14,6 +14,7 @@ set -euo pipefail
 module load python-data/3.12-31.03
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 SAMPLE=$1
 cd $BASE/visualization/vcf-stats-out/${SAMPLE}_plots/
 python plot.py

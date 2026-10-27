@@ -12,13 +12,13 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load gatk/4.5.0.0
 
-REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
 SAMPLE=$1
 
 gatk GenotypeGVCFs \
     -R $REF \
-    -V $BASE/gatk-out/${SAMPLE}.g.vcf.gz \
-    -O $BASE/gatk-out/${SAMPLE}.vcf.gz
+    -V $OUTPUTS/base/gatk-out/${SAMPLE}.g.vcf.gz \
+    -O $OUTPUTS/base/gatk-out/${SAMPLE}.vcf.gz

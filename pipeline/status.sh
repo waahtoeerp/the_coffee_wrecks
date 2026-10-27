@@ -15,9 +15,9 @@ yn() { [ -s "$1" ] && echo "yes" || echo "no"; }
 
 printf '%-16s %-10s %-10s %-14s %s\n' SAMPLE RESCALED gVCF FILTERED RECORDS
 while read -r s; do
-    rescaled="$BASE/mapDamage-out/${s}_mapDamage_dedup/${s}_dedup.rescaled.bam"
-    gvcf="$BASE/gatk-out/${s}.g.vcf.gz"
-    filt="$BASE/gatk-out/${s}_filtered.vcf.gz"
+    rescaled="$OUTPUTS/base/mapDamage-out/${s}_mapDamage_dedup/${s}_dedup.rescaled.bam"
+    gvcf="$OUTPUTS/base/gatk-out/${s}.g.vcf.gz"
+    filt="$OUTPUTS/base/gatk-out/${s}_filtered.vcf.gz"
     records="-"
     if [ -s "$filt" ]; then
         records=$(zcat "$filt" | grep -vc '^#')

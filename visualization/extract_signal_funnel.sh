@@ -15,8 +15,9 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 SAMPLE=$1
-DUPMETRICS=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt
+DUPMETRICS=$OUTPUTS/base/mapDamage-out/${SAMPLE}_dup_metrics.txt
 OUTDIR=$BASE/visualization/viz-data
 OUT=$OUTDIR/${SAMPLE}_signal_funnel.json
 

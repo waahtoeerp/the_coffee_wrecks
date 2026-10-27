@@ -33,16 +33,18 @@ set -euo pipefail
 # Usage: ./subsample_unmapped.sh <SAMPLE> [N_READS]
 #   e.g. ./subsample_unmapped.sh CT600-007R0002 2000000
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
-CW=/scratch/project_2019675/the_coffee_wrecks
-source $BASE/load_modules.sh
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
+source $CODE/load_modules.sh
 module load samtools/1.21
 module load seqtk/1.4
 
 SAMPLE=$1
 N_READS=${2:-2000000}
 OUTDIR=$BASE/results/$SAMPLE
-SORTED_BAM=$CW/bwa-out/${SAMPLE}_sorted.bam
+SORTED_BAM=$OUTPUTS/base/bwa-out/${SAMPLE}_sorted.bam
 SEED=42
 
 mkdir -p $OUTDIR
@@ -61,8 +63,8 @@ if [ -f "$SORTED_BAM" ]; then
         | seqtk sample -s$SEED /dev/stdin $N_READS > $OUTDIR/${SAMPLE}_subsample.fq
 else
     echo "Approximate mode: no sorted.bam found (likely cleaned up), subsampling raw fastq instead"
-    R1=$CW/vrouw_maria_2026_segments/Unknown_${SAMPLE}_1.fq.gz
-    R2=$CW/vrouw_maria_2026_segments/Unknown_${SAMPLE}_2.fq.gz
+    R1=$RAW/vrouw_maria_2026_segments/Unknown_${SAMPLE}_1.fq.gz
+    R2=$RAW/vrouw_maria_2026_segments/Unknown_${SAMPLE}_2.fq.gz
     HALF=$((N_READS / 2))
     seqtk sample -s$SEED "$R1" $HALF > $OUTDIR/${SAMPLE}_subsample.fq
     seqtk sample -s$SEED "$R2" $HALF >> $OUTDIR/${SAMPLE}_subsample.fq

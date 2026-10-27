@@ -29,15 +29,17 @@ set -euo pipefail
 #
 # Usage: ./align_and_mapdamage.sh <SAMPLE>
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
-CW=/scratch/project_2019675/the_coffee_wrecks
-source $BASE/load_modules.sh
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
+source $CODE/load_modules.sh
 module load bwa/0.7.19
 module load samtools/1.21
 module load mapdamage2/2.2.3
 
 SAMPLE=$1
-REF=$CW/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
+REF=$REF
 OUTDIR=$BASE/results/$SAMPLE
 FQ=$OUTDIR/${SAMPLE}_coffee_hits.fq.gz
 

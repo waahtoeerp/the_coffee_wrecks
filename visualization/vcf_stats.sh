@@ -10,6 +10,7 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load bcftools/1.23.1
 
@@ -19,7 +20,7 @@ OUTDIR=$BASE/visualization/vcf-stats-out
 mkdir -p $OUTDIR/${SAMPLE}_plots
 
 bcftools stats \
-    $BASE/gatk-out/${SAMPLE}_filtered.vcf.gz \
+    $OUTPUTS/base/gatk-out/${SAMPLE}_filtered.vcf.gz \
     > $OUTDIR/${SAMPLE}_stats.txt
 
 # -P: skip the PDF-summary step. plot-vcfstats otherwise shells out to

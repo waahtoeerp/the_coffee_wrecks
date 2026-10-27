@@ -15,7 +15,10 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
 DB_DIR=$BASE/kraken2_db
 URL="https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_08_GB_20260626.tar.gz"
 TARBALL=$BASE/k2_pluspf_08gb.tar.gz

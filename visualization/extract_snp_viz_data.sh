@@ -10,13 +10,14 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load bcftools/1.23.1
 module load samtools/1.21
 
 SAMPLE=$1
-VCF=$BASE/gatk-out/${SAMPLE}_filtered.vcf.gz
-BAM=$BASE/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
+VCF=$OUTPUTS/base/gatk-out/${SAMPLE}_filtered.vcf.gz
+BAM=$OUTPUTS/base/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 OUTDIR=$BASE/visualization/viz-data
 WINDOW=2000
 BINSIZE=25

@@ -24,15 +24,17 @@ set -euo pipefail
 #   DB_NAME defaults to coffee_kraken2_db (includes ET-39 -- circular, see above).
 #   Use parents_kraken2_db for the sanity check without the reference.
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
-CW=/scratch/project_2019675/the_coffee_wrecks
-source $BASE/load_modules.sh
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
+source $CODE/load_modules.sh
 module load kraken2/2.17.1
 module load samtools/1.21
 
 SAMPLE=$1
 DB_NAME=${2:-coffee_kraken2_db}
-BAM=$CW/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
+BAM=$OUTPUTS/base/mapDamage-out/${SAMPLE}_mapDamage_dedup/${SAMPLE}_dedup.rescaled.bam
 MAPPED_DIR=$BASE/results/$SAMPLE/positive_control
 OUTDIR=$MAPPED_DIR/$DB_NAME
 DB_DIR=$BASE/$DB_NAME

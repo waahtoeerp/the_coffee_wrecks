@@ -12,15 +12,16 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load picard/3.3.0
 module load samtools/1.21
 
 SAMPLE=$1
-INBAM=$BASE/bwa-out/${SAMPLE}_sorted.bam
-OUTBAM=$BASE/bwa-out/${SAMPLE}_sorted_RG.bam
+INBAM=$OUTPUTS/base/bwa-out/${SAMPLE}_sorted.bam
+OUTBAM=$OUTPUTS/base/bwa-out/${SAMPLE}_sorted_RG.bam
 
-mkdir -p $BASE/bwa-out
+mkdir -p $OUTPUTS/base/bwa-out
 
 # Runs right after bwa-vrouw.sh, before mapDamage_vrouw_maria.sh's
 # MarkDuplicates step — Picard's MarkDuplicates requires @RG-tagged input

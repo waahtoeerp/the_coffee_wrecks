@@ -16,7 +16,10 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
 DB=$BASE/coffee_kraken2_db
 TAXONOMY_DIR=$DB/taxonomy
 

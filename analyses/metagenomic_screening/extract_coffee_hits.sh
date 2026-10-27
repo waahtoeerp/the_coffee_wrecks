@@ -15,8 +15,11 @@
 
 set -euo pipefail
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
-source $BASE/load_modules.sh
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
+source $CODE/load_modules.sh
 module load seqtk/1.4
 
 SAMPLE=$1

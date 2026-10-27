@@ -12,10 +12,11 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load fastqc/0.12.1
 
-OUTDIR=$BASE/fastqc-out
+OUTDIR=$OUTPUTS/base/fastqc-out
 
 mkdir -p $OUTDIR
 

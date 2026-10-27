@@ -12,17 +12,17 @@
 set -euo pipefail
 
 BASE=${CW_BASE:-/scratch/project_2019675/the_coffee_wrecks}
+source $BASE/pipeline/config.sh
 source $BASE/load_modules.sh
 module load samtools/1.21
 module load picard/3.3.0
 module load mapdamage2/2.2.3
 
-REF=$BASE/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna
 SAMPLE=$1
-INBAM=$BASE/bwa-out/${SAMPLE}_sorted_RG.bam
-DEDUP=$BASE/bwa-out/${SAMPLE}_dedup.bam
+INBAM=$OUTPUTS/base/bwa-out/${SAMPLE}_sorted_RG.bam
+DEDUP=$OUTPUTS/base/bwa-out/${SAMPLE}_dedup.bam
 
-mkdir -p $BASE/mapDamage-out
+mkdir -p $OUTPUTS/base/mapDamage-out
 
 # VALIDATION_STRINGENCY=LENIENT: same reason as add_readgroups.sh — bwa
 # sampe can emit an unmapped read with a stale nonzero MAPQ, which
@@ -30,7 +30,7 @@ mkdir -p $BASE/mapDamage-out
 picard MarkDuplicates \
     I=$INBAM \
     O=$DEDUP \
-    M=$BASE/mapDamage-out/${SAMPLE}_dup_metrics.txt \
+    M=$OUTPUTS/base/mapDamage-out/${SAMPLE}_dup_metrics.txt \
     REMOVE_DUPLICATES=true \
     VALIDATION_STRINGENCY=LENIENT
 
@@ -39,7 +39,7 @@ samtools index $DEDUP
 mapDamage \
     -i $INBAM \
     -r $REF \
-    --folder $BASE/mapDamage-out/${SAMPLE}_mapDamage
+    --folder $OUTPUTS/base/mapDamage-out/${SAMPLE}_mapDamage
 
 # Cleanup: $INBAM (bwa-out/${SAMPLE}_sorted_RG.bam) is used by both steps
 # above (MarkDuplicates and this QC-only mapDamage run) but nothing after

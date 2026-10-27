@@ -45,23 +45,8 @@ errors*.txt
 Thumbs.db
 
 # Folders
-bwa-out/*
-!bwa-out/.gitkeep
-
-gatk-out/*
-!gatk-out/.gitkeep
-
-mapDamage-out/*
-!mapDamage-out/.gitkeep
-
-ref_gen/*
-!ref_gen/.gitkeep
-
 slurm-out/*
 !slurm-out/.gitkeep
-
-fastqc-out/*
-!fastqc-out/.gitkeep
 
 vrouw_maria_2026/*
 !vrouw_maria_2026/.gitkeep
@@ -78,7 +63,7 @@ output-id/*
 
 # Analyses: results live under $OUTPUTS (outside the repo); the output/ symlink
 # and log/ folders are local only. Run manifests are tracked.
-analyses/*/output/
+analyses/*/output
 analyses/*/log/
 !analyses/*/manifests/
 

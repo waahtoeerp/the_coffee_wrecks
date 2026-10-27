@@ -28,9 +28,11 @@ set -euo pipefail
 #
 # Usage: ./build_coffee_kraken2_db.sh
 
-BASE=/scratch/project_2019675/CW_metagenomic_screening
-CW=/scratch/project_2019675/the_coffee_wrecks
-source $BASE/load_modules.sh
+CODE=/scratch/project_2019675/the_coffee_wrecks/analyses/metagenomic_screening
+source /scratch/project_2019675/the_coffee_wrecks/pipeline/config.sh
+RAW=$BASE
+BASE=$OUTPUTS/metagenomic_screening
+source $CODE/load_modules.sh
 module load kraken2/2.17.1
 
 DB=$BASE/coffee_kraken2_db
@@ -55,7 +57,7 @@ tag_and_add () {
 }
 
 echo "Adding C. arabica (GCF_036785885.1, taxid 13443)..."
-tag_and_add "$CW/ref_gen/GCF_036785885.1_Coffea_Arabica_ET-39_HiFi_genomic.fna" \
+tag_and_add "$REF" \
     13443 "$REFS/GCF_036785885.1_tagged.fna"
 
 echo "Adding C. canephora (GCA_036785865.1, taxid 49390)..."

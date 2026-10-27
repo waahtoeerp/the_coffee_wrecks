@@ -12,8 +12,9 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
+source "$DIR/../../pipeline/config.sh"
 
-if [ ! -f "$DIR/kraken2_db/hash.k2d" ]; then
+if [ ! -f "$OUTPUTS/metagenomic_screening/kraken2_db/hash.k2d" ]; then
     echo "Kraken2 database not found — run ./download_kraken2_db.sh first." >&2
     exit 1
 fi
