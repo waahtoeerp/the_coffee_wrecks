@@ -26,8 +26,8 @@ Any change to a shared stage must reproduce these counts before it is accepted.
 
 ## Running
 
-- `./RUN_ME.sh` checks inputs and submits the chain through `run_pipeline.sh`.
-- `./RUN_ME.sh status` shows the per-sample table.
+- `./run.sh` checks inputs and submits the chain through `run_pipeline.sh`.
+- `./run.sh status` shows the per-sample table.
 - Stage order and dependencies are those of `run_pipeline.sh`; nothing is moved yet.
 
 ## Known gaps (to fix after the reproduction run)

@@ -32,25 +32,25 @@ Done:
 
 1. Uncommitted items settled. `CW_BASE` override kept and committed (`db44faf`); the fake-data tests moved out of the repo.
 2. Shared layer written, without moving any existing file (`0ce8f90`): `pipeline/config.sh`, `pipeline/lib.sh`, `pipeline/check.sh`, `pipeline/status.sh`, `data/samples/samples.tsv`. `check.sh` was tested on a bad base directory and exits 1 listing every problem. `status.sh` reproduces the baseline counts (233, 209, 208, 63) from the existing outputs.
-3. Base wrapper written (`analyses/base/RUN_ME.sh`, `config.sh`, `notes.md`). It runs the check and then hands off to the existing `run_pipeline.sh`, which is unchanged. `status` and `--dry-run` were tested; nothing was submitted.
+3. Base wrapper written (`analyses/base/run.sh`, `config.sh`, `notes.md`). It runs the check and then hands off to the existing `run_pipeline.sh`, which is unchanged. `status` and `--dry-run` were tested; nothing was submitted.
 4. Screening imported as `analyses/metagenomic_screening/` (`f6a741d`): tracked files copied, `LABDIARY.md` is now `notes.md` with a provenance header. Scripts are unchanged and still point at the original data directory.
 5. Reference manifest and fetch script in `data/references/coffea_arabica_ET39/` (`ac4f294`). `fetch.sh` verifies the NCBI checksum before and after decompressing, and does not overwrite a mismatched file. It does not index; `setup_reference.sh` does that.
-6. `analyses/base/RUN_ME.sh` writes a run manifest into `analyses/base/manifests/` before submitting (commit, date, arguments, samples, config). Root `README.md` has a "Where things are" section.
+6. `analyses/base/run.sh` writes a run manifest into `analyses/base/manifests/` before submitting (commit, date, arguments, samples, config). Root `README.md` has a "Where things are" section.
 7. Data move (`be4645c`). Base outputs (`bwa-out`, `mapDamage-out`, `gatk-out`, `fastqc-out`) are in `$OUTPUTS/base/`; the screening databases and subsamples are in `$OUTPUTS/metagenomic_screening/`; the reference is in `data/references/coffea_arabica_ET39/`. `pipeline/config.sh` defines `OUTPUTS`, `REF_DIR` and `REF`. All stage and screening scripts source it by absolute path. `analyses/*/output` symlinks point at each analysis's outputs folder, and `log/` folders exist. The stage scripts have not yet been run from the new paths on the cluster.
 
 Not done, and why:
 
 - **Reproduction run of the base chain on all four samples (step 3 check).** Not submitted: it is many hours of compute and needs the scratch disk space that has run out before. Needs your go-ahead.
 - **Shared stage scripts in `pipeline/stages/`.** Deferred until the reproduction run confirms the wrapper behaves. Refactoring the working scripts before that would make a failure hard to attribute.
-- **`analyses/metagenomic_screening/RUN_ME.sh` and `config.sh`.** Not written yet. The data move is done (item 7), so the wrapper can now be written.
+- **`analyses/metagenomic_screening/run.sh`.** Written: checks the Kraken2 databases, then runs `run_screening.sh` for the samples. Status and dry-run included.
 - **`stages/` and `databases/` subfolders in `analyses/metagenomic_screening/`.** Not created; its scripts are still flat in the analysis folder.
 - **`git subtree` is not installed here,** and a merge-based import conflicted on the root `README.md` and `.gitignore`. The merge was aborted; the copy approach was used instead, as the plan allows. The screening repo's history stays there.
 - **Next analysis.** Not chosen yet, so no folder was created.
 
 Next steps, in order:
 
-1. Go-ahead for the four-sample reproduction run of the base chain, through `analyses/base/RUN_ME.sh`.
-2. Add `analyses/metagenomic_screening/RUN_ME.sh` and `config.sh`, and decide whether its scripts move into `stages/` and `databases/`.
+1. Go-ahead for the four-sample reproduction run of the base chain, through `analyses/base/run.sh`.
+2. Decide whether the screening scripts move into `stages/` and `databases/`, and run the screening chain for R0002 and R0005 (not yet screened).
 3. Shared stages into `pipeline/stages/`, parameterised by config, re-checked against the baseline.
 4. Choose the next analysis and add it on top of the base outputs.
 
@@ -58,7 +58,7 @@ Next steps, in order:
 
 - Samples and references are shared; outputs are never copied between analyses.
 - Done-markers are written only after output checks pass; an exit code alone is never enough.
-- `RUN_ME.sh` submits each analysis's stages as one SLURM chain with `afterok`.
+- Each analysis is run through one `run.sh` (the `run*.sh` entry point, run from the login node). It checks inputs, writes a manifest, and submits the analysis's stage jobs as one SLURM chain with `afterok`. Job scripts (`#SBATCH` headers) are submitted by `sbatch`; drivers are not.
 - Run manifests are tracked in `analyses/<name>/manifests/`.
 - The metagenomic screening (`CW_metagenomic_screening`) comes into this repo as an analysis, `analyses/metagenomic_screening/`. It is no longer a separate repo.
 - `claude-backup/` stays in this repo. It is important and is not moved.
@@ -107,16 +107,16 @@ the_coffee_wrecks/
       gatk_filter.sh
   analyses/
     base/
-      RUN_ME.sh                runs the shared chain for every sample
+      run.sh                runs the shared chain for every sample
       config.sh                samples, reference, parameters
       notes.md                 decisions and why
     variant_call/
-      RUN_ME.sh
+      run.sh
       config.sh                input: base outputs; parameters for this analysis
       notes.md
       stages/                  stage scripts that only this analysis uses
     metagenomic_screening/
-      RUN_ME.sh
+      run.sh
       config.sh                input: base outputs (raw reads where the base has cleaned up)
       notes.md                 lab diary, moved from CW_metagenomic_screening/LABDIARY.md
       stages/                  subsample, Kraken2 (PlusPF-8 and coffee DB), extract, align
@@ -141,7 +141,7 @@ Each analysis folder has a gitignored `output/` symlink to its place under `$OUT
 
 ## How a run works
 
-`RUN_ME.sh` in each analysis does three things:
+`run.sh` in each analysis does three things:
 
 1. Reads its `config.sh`, then `pipeline/config.sh`.
 2. Runs `pipeline/check.sh`. This checks the samples, the reference, the modules, and every upstream input. If an upstream analysis has not finished, the check names it, for example "run base first".
@@ -150,9 +150,9 @@ Each analysis folder has a gitignored `output/` symlink to its place under `$OUT
 Usage, the same for every analysis:
 
 ```
-./RUN_ME.sh              submit whatever is not done yet
-./RUN_ME.sh status       show the table, submit nothing
-./RUN_ME.sh --dry-run    show the commands that would be submitted
+./run.sh              submit whatever is not done yet
+./run.sh status       show the table, submit nothing
+./run.sh --dry-run    show the commands that would be submitted
 ```
 
 `pipeline/status.sh` prints one table covering all analyses, so you can see what is done, failed or waiting at a glance.

@@ -55,8 +55,8 @@ Confirm that every read path in the file exists on scratch. The `check.sh` step 
 ## 4. Run the check
 
 ```
-cd projects/<analysis-name>
-./RUN_ME.sh --dry-run
+cd analyses/<analysis-name>
+./run.sh --dry-run
 ```
 
 Read the output. It lists the commands that would be submitted, and any check that failed. Do not continue while any check shows FAIL.
@@ -66,13 +66,13 @@ Read the output. It lists the commands that would be submitted, and any check th
 Before running every sample, run one:
 
 ```
-./RUN_ME.sh --sample CT600-007R0003
+./run.sh CT600-007R0003
 ```
 
 Wait for it to finish, then check it:
 
 ```
-./RUN_ME.sh status
+./run.sh status
 ```
 
 For any failed stage, the status table shows the log path. Read the last lines of that log before doing anything else.
@@ -82,12 +82,12 @@ For any failed stage, the status table shows the log path. Read the last lines o
 Once one sample completes and its outputs look right:
 
 ```
-./RUN_ME.sh
+./run.sh
 ```
 
 ## Recovery
 
-- **A stage failed:** read its log, fix the cause, then rerun with `./RUN_ME.sh`. Stages with a done-marker are skipped, so only the failed stage and the ones after it run again.
+- **A stage failed:** read its log, fix the cause, then rerun with `./run.sh`. Stages with a done-marker are skipped, so only the failed stage and the ones after it run again.
 - **A stage needs to run again even though it is done:** delete its done-marker, not the output. The marker is in `<output folder>/.done/`.
 - **The code is broken after a pull:** go back to the commit you recorded in step 1 with `git checkout <commit>`. Do not reset or delete files on scratch to fix this.
 - **A reference was purged:** rebuild it with `./fetch.sh`, then repeat step 2.

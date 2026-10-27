@@ -4,11 +4,13 @@ Runs on CSC Roihu from `/scratch/project_2019675/the_coffee_wrecks`. Each step i
 
 ## Where things are
 
-- `analyses/base/` — the alignment chain every analysis starts from. `./analyses/base/RUN_ME.sh status` shows the per-sample table; `./analyses/base/RUN_ME.sh --dry-run` checks inputs without submitting. Its notes and verified baseline are in `analyses/base/notes.md`.
-- `analyses/metagenomic_screening/` — Kraken2 screening of the off-target reads. Its scripts still use the data in `CW_metagenomic_screening`'s original directory; see its `notes.md`.
+- `analyses/base/` — the alignment chain every analysis starts from. `./analyses/base/run.sh status` shows the per-sample table; `./analyses/base/run.sh --dry-run` checks inputs without submitting. Its notes and verified baseline are in `analyses/base/notes.md`.
+- `analyses/metagenomic_screening/` — Kraken2 screening of the off-target reads. `./analyses/metagenomic_screening/run.sh status` shows what exists per sample; `run.sh` runs the screening. Its notes are in `notes.md`.
 - `pipeline/` — shared settings (`config.sh`), the input check (`check.sh`), and the status table (`status.sh`).
 - `data/` — the sample list (`samples/samples.tsv`) and the reference manifest (`references/coffea_arabica_ET39/`).
 - `docs/restructure-plan.md` — the layout plan and its current status. `docs/deploy-roihu.md` — checklist for running on Roihu.
+
+Every analysis is run the same way: `./analyses/<name>/run.sh` (with `status` or `--dry-run`) from the login node. Do not `sbatch` the `run*.sh` drivers; they submit the jobs themselves.
 
 The step-by-step instructions below predate this layout and still describe the same scripts.
 

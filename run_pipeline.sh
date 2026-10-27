@@ -34,10 +34,13 @@ if [ "${1:-}" = "--serial" ]; then
     shift
 fi
 
+source "$DIR/pipeline/config.sh"
+source "$DIR/pipeline/lib.sh"
+
 if [ "$#" -gt 0 ]; then
     SAMPLES=("$@")
 else
-    SAMPLES=(CT600-007R0002 CT600-007R0003 CT600-007R0004 CT600-007R0005)
+    mapfile -t SAMPLES < <(sample_ids)
 fi
 
 echo "Submitting reference setup and QC (shared across all samples, no dependencies)..."
