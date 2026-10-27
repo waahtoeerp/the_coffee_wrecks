@@ -2,6 +2,16 @@
 
 Runs on CSC Roihu from `/scratch/project_2019675/the_coffee_wrecks`. Each step is a SLURM job; you start the pipeline from the login node and check it yourself.
 
+## Where things are
+
+- `analyses/base/` — the alignment chain every analysis starts from. `./analyses/base/RUN_ME.sh status` shows the per-sample table; `./analyses/base/RUN_ME.sh --dry-run` checks inputs without submitting. Its notes and verified baseline are in `analyses/base/notes.md`.
+- `analyses/metagenomic_screening/` — Kraken2 screening of the off-target reads. Its scripts still use the data in `CW_metagenomic_screening`'s original directory; see its `notes.md`.
+- `pipeline/` — shared settings (`config.sh`), the input check (`check.sh`), and the status table (`status.sh`).
+- `data/` — the sample list (`samples/samples.tsv`) and the reference manifest (`references/coffea_arabica_ET39/`).
+- `docs/restructure-plan.md` — the layout plan and its current status. `docs/deploy-roihu.md` — checklist for running on Roihu.
+
+The step-by-step instructions below predate this layout and still describe the same scripts.
+
 ## Before you start
 
 - Raw reads must be at `vrouw_maria_2026_segments/Unknown_<SAMPLE>_1.fq.gz` and `_2.fq.gz`. If they come as segments, concatenate and check each file with `gzip -t` first.

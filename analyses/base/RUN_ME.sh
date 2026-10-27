@@ -17,6 +17,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/../../pipeline/config.sh"
 source "$HERE/../../pipeline/lib.sh"
+source "$HERE/config.sh"
 
 case "${1:-}" in
     status)
@@ -31,6 +32,24 @@ case "${1:-}" in
 esac
 
 "$CW_REPO/pipeline/check.sh" || exit 1
+
+MANIFEST_DIR="$HERE/manifests"
+MANIFEST="$MANIFEST_DIR/$(date +%Y%m%d-%H%M%S).manifest"
+mkdir -p "$MANIFEST_DIR"
+{
+    echo "analysis: $ANALYSIS"
+    echo "date: $(date -Iseconds)"
+    echo "commit: $(git -C "$CW_REPO" rev-parse --short HEAD)"
+    echo "dirty_files: $(git -C "$CW_REPO" status --short | grep -v '^??' | wc -l)"
+    echo "args: $*"
+    echo "samples:"
+    sample_ids | sed 's/^/  /'
+    echo "--- pipeline/config.sh ---"
+    cat "$CW_REPO/pipeline/config.sh"
+    echo "--- analyses/base/config.sh ---"
+    cat "$HERE/config.sh"
+} > "$MANIFEST"
+echo "Run manifest: $MANIFEST"
 
 cd "$CW_REPO"
 exec ./run_pipeline.sh "$@"
