@@ -34,6 +34,8 @@ Done:
 2. Shared layer written, without moving any existing file (`0ce8f90`): `pipeline/config.sh`, `pipeline/lib.sh`, `pipeline/check.sh`, `pipeline/status.sh`, `data/samples/samples.tsv`. `check.sh` was tested on a bad base directory and exits 1 listing every problem. `status.sh` reproduces the baseline counts (233, 209, 208, 63) from the existing outputs.
 3. Base wrapper written (`analyses/base/RUN_ME.sh`, `config.sh`, `notes.md`). It runs the check and then hands off to the existing `run_pipeline.sh`, which is unchanged. `status` and `--dry-run` were tested; nothing was submitted.
 4. Screening imported as `analyses/metagenomic_screening/` (`f6a741d`): tracked files copied, `LABDIARY.md` is now `notes.md` with a provenance header. Scripts are unchanged and still point at the original data directory.
+5. Reference manifest and fetch script in `data/references/coffea_arabica_ET39/` (`ac4f294`). `fetch.sh` verifies the NCBI checksum before and after decompressing, and does not overwrite a mismatched file. It does not index; `setup_reference.sh` does that.
+6. `analyses/base/RUN_ME.sh` writes a run manifest into `analyses/base/manifests/` before submitting (commit, date, arguments, samples, config). Root `README.md` has a "Where things are" section.
 
 Not done, and why:
 
